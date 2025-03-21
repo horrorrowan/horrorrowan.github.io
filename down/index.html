@@ -86,7 +86,7 @@
 <body>
   <div class="container">
     <h1>Создание JSON файла</h1>
-    <textarea id="codeInput" placeholder="Введите ваш код здесь..."></textarea>
+    <textarea id="codeInput" placeholder="Введите ваш JSON здесь..."></textarea>
     <input type="text" id="filenameInput" placeholder="Введите название файла">
     <button id="downloadButton">Скачать JSON</button>
   </div>
@@ -97,7 +97,7 @@
       const filename = document.getElementById('filenameInput').value;
 
       if (!code.trim()) {
-        alert('Пожалуйста, введите код.');
+        alert('Пожалуйста, введите JSON.');
         return;
       }
 
@@ -106,25 +106,29 @@
         return;
       }
 
-      // Создаем JSON объект
-      const jsonObject = { code: code };
+      try {
+        // Пытаемся распарсить JSON из текстового поля
+        const jsonObject = JSON.parse(code);
 
-      // Преобразуем объект в строку
-      const jsonString = JSON.stringify(jsonObject, null, 2);
+        // Преобразуем объект обратно в строку с отступами
+        const jsonString = JSON.stringify(jsonObject, null, 2);
 
-      // Создаем Blob для скачивания
-      const blob = new Blob([jsonString], { type: 'application/json' });
+        // Создаем Blob для скачивания
+        const blob = new Blob([jsonString], { type: 'application/json' });
 
-      // Создаем ссылку для скачивания
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `${filename}.json`;
+        // Создаем ссылку для скачивания
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${filename}.json`;
 
-      // Программно кликаем по ссылке для скачивания
-      link.click();
+        // Программно кликаем по ссылке для скачивания
+        link.click();
 
-      // Очищаем URL объект
-      URL.revokeObjectURL(link.href);
+        // Очищаем URL объект
+        URL.revokeObjectURL(link.href);
+      } catch (error) {
+        alert('Некорректный JSON. Пожалуйста, проверьте введенные данные.');
+      }
     });
   </script>
 </body>
