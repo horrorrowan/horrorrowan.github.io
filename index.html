@@ -114,25 +114,38 @@
         modeToggle.addEventListener('click', toggleMode);
         content.addEventListener('click', handleContentClick);
 
-        function handleFileLoad(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    data = JSON.parse(e.target.result);
-                    if (!Array.isArray(data) || !data.every(item => item.question && item.answer)) {
-                        throw new Error('Неверный формат данных');
-                    }
-                    showRandomItem();
-                } catch (error) {
-                    alert('Ошибка загрузки файла: ' + error.message);
-                    data = [];
+    function handleFileLoad(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+    
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const parsedData = JSON.parse(e.target.result);
+                
+                // Детальная проверка структуры
+                if (!Array.isArray(parsedData)) {
+                    throw new Error('Корневой элемент должен быть массивом');
                 }
-            };
-            reader.readAsText(file);
-        }
+                
+                parsedData.forEach((item, index) => {
+                    if (typeof item.question !== 'string') {
+                        throw new Error(`Элемент ${index}: отсутствует/неверный question`);
+                    }
+                    if (typeof item.answer !== 'string') {
+                        throw new Error(`Элемент ${index}: отсутствует/неверный answer`);
+                    }
+                });
+    
+                data = parsedData;
+                showRandomItem();
+            } catch (error) {
+                alert(`Ошибка в строке ${error.lineNumber}: ${error.message}`);
+                data = [];
+            }
+        };
+        reader.readAsText(file);
+    }
 
         function showRandomItem() {
             if (data.length === 0) return;
