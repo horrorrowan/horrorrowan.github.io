@@ -1,1 +1,188 @@
-tested
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Viewer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #f0f2f5;
+            transition: background 0.3s;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .content {
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .content:active {
+            transform: scale(0.98);
+        }
+
+        .controls {
+            padding: 15px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        input[type="file"] {
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.5s;
+        }
+        .fade-enter, .fade-leave-to {
+            opacity: 0;
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 15px;
+            }
+            
+            button {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="jsonFile" accept=".json" class="hidden">
+    <div class="container">
+        <div class="content" id="content">
+            <div class="text" id="displayText">Загрузите JSON файл</div>
+        </div>
+        <div class="controls">
+            <button id="modeToggle">Переключить режим</button>
+            <span id="modeIndicator">Режим: Вопрос → Ответ</span>
+        </div>
+    </div>
+
+    <script>
+        const jsonInput = document.getElementById('jsonFile');
+        const displayText = document.getElementById('displayText');
+        const modeToggle = document.getElementById('modeToggle');
+        const modeIndicator = document.getElementById('modeIndicator');
+        const content = document.getElementById('content');
+
+        let data = [];
+        let currentMode = 'question'; // 'question' или 'answer'
+        let currentIndex = -1;
+
+        jsonInput.addEventListener('change', handleFileLoad);
+        modeToggle.addEventListener('click', toggleMode);
+        content.addEventListener('click', handleContentClick);
+
+        function handleFileLoad(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    data = JSON.parse(e.target.result);
+                    if (!Array.isArray(data) || !data.every(item => item.question && item.answer)) {
+                        throw new Error('Неверный формат данных');
+                    }
+                    showRandomItem();
+                } catch (error) {
+                    alert('Ошибка загрузки файла: ' + error.message);
+                    data = [];
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function showRandomItem() {
+            if (data.length === 0) return;
+
+            currentIndex = Math.floor(Math.random() * data.length);
+            const item = data[currentIndex];
+            
+            if (currentMode === 'question') {
+                displayText.textContent = item.question;
+                content.dataset.state = 'question';
+            } else {
+                displayText.textContent = item.answer;
+                content.dataset.state = 'answer';
+            }
+        }
+
+        function toggleMode() {
+            currentMode = currentMode === 'question' ? 'answer' : 'question';
+            modeIndicator.textContent = `Режим: ${currentMode === 'question' ? 'Вопрос → Ответ' : 'Ответ → Вопрос'}`;
+            
+            if (data.length > 0) {
+                const item = data[currentIndex];
+                displayText.textContent = currentMode === 'question' ? item.question : item.answer;
+                content.dataset.state = currentMode;
+            }
+        }
+
+        function handleContentClick() {
+            if (!data.length) return jsonInput.click();
+
+            if (content.dataset.state === currentMode) {
+                showRandomItem();
+            } else {
+                const item = data[currentIndex];
+                displayText.textContent = currentMode === 'question' ? item.answer : item.question;
+                content.dataset.state = currentMode;
+            }
+        }
+
+        // Пример корректного JSON:
+        // [
+        //     {
+        //         "question": "Что такое HTML?",
+        //         "answer": "Язык гипертекстовой разметки для создания веб-страниц"
+        //     },
+        //     {
+        //         "question": "Какой тег используется для заголовков?",
+        //         "answer": "<h1> до <h6>"
+        //     }
+        // ]
+    </script>
+</body>
+</html>
