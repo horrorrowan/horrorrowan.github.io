@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Создание JSON файла</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 500px;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      resize: none;
+      margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+      width: calc(100% - 22px);
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 600px) {
+      textarea {
+        height: 120px;
+      }
+
+      button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Создание JSON файла</h1>
+    <textarea id="codeInput" placeholder="Введите ваш код здесь..."></textarea>
+    <input type="text" id="filenameInput" placeholder="Введите название файла">
+    <button id="downloadButton">Скачать JSON</button>
+  </div>
+
+  <script>
+    document.getElementById('downloadButton').addEventListener('click', function () {
+      const code = document.getElementById('codeInput').value;
+      const filename = document.getElementById('filenameInput').value;
+
+      if (!code.trim()) {
+        alert('Пожалуйста, введите код.');
+        return;
+      }
+
+      if (!filename.trim()) {
+        alert('Пожалуйста, укажите название файла.');
+        return;
+      }
+
+      // Создаем JSON объект
+      const jsonObject = { code: code };
+
+      // Преобразуем объект в строку
+      const jsonString = JSON.stringify(jsonObject, null, 2);
+
+      // Создаем Blob для скачивания
+      const blob = new Blob([jsonString], { type: 'application/json' });
+
+      // Создаем ссылку для скачивания
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${filename}.json`;
+
+      // Программно кликаем по ссылке для скачивания
+      link.click();
+
+      // Очищаем URL объект
+      URL.revokeObjectURL(link.href);
+    });
+  </script>
+</body>
+</html>
