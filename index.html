@@ -3,65 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QA Viewer</title>
+    <title>QA Pro</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary: #272c33;
+            --secondary: #3a424d;
+            --accent: #61dafb;
+            --success: #4CAF50;
+            --danger: #f44336;
+            --card-bg: #20232a;
+            --text-color: #ffffff;
+        }
+
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
+            background: var(--primary);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: #f0f2f5;
-            transition: background 0.3s;
-        }
-
-        .container {
-            max-width: 600px;
-            width: 100%;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            margin: 20px 0;
-        }
-
-        .content {
             padding: 20px;
-            cursor: pointer;
-            transition: transform 0.2s;
         }
 
-        .content:active {
+        .file-input-container {
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .file-input {
+            opacity: 0;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .file-label {
+            padding: 14px 30px;
+            background: var(--accent);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .file-label:hover {
+            background: #21a1d8;
+        }
+
+        .card-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px 0;
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:active {
             transform: scale(0.98);
         }
 
-        .controls {
-            padding: 15px;
-            background: #ffffff;
-            border-top: 1px solid #eee;
+        .card-header {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .card-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            word-break: break-word;
+            overflow-y: auto;
+            max-height: 150px;
+        }
+
+        .card-footer {
+            margin-top: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        button {
-            background: #4CAF50;
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        .mode-toggle {
+            background: var(--secondary);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 25px;
             cursor: pointer;
             transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
         }
 
-        button:hover {
-            background: #45a049;
+        .mode-toggle:hover {
+            background: #2a343f;
         }
 
-        input[type="file"] {
-            margin: 20px 0;
+        .status {
+            color: var(--text-color);
+            font-weight: 600;
         }
 
         .hidden {
@@ -69,33 +142,44 @@
         }
 
         .fade-enter-active, .fade-leave-active {
-            transition: opacity 0.5s;
+            transition: opacity 0.3s;
         }
+
         .fade-enter, .fade-leave-to {
             opacity: 0;
         }
 
         @media (max-width: 600px) {
-            .content {
-                padding: 15px;
+            .card {
+                padding: 20px;
             }
             
-            button {
-                padding: 8px 16px;
+            .mode-toggle {
                 font-size: 0.9em;
+                padding: 10px 18px;
             }
         }
     </style>
 </head>
 <body>
-    <input type="file" id="jsonFile" accept=".json" class="hidden">
-    <div class="container">
-        <div class="content" id="content">
-            <div class="text" id="displayText">Загрузите JSON файл</div>
-        </div>
-        <div class="controls">
-            <button id="modeToggle">Переключить режим</button>
-            <span id="modeIndicator">Режим: Вопрос → Ответ</span>
+    <div class="file-input-container">
+        <input type="file" id="jsonFile" accept=".json" class="file-input">
+        <label for="jsonFile" class="file-label">Выбрать JSON файл</label>
+    </div>
+
+    <div class="card-container">
+        <div class="card" id="card">
+            <div class="card-header" id="cardHeader">Вопрос</div>
+            <div class="card-content">
+                <div id="displayText">Загрузите JSON файл</div>
+            </div>
+            <div class="card-footer">
+                <div class="status" id="status">0 / 0</div>
+                <button class="mode-toggle" id="modeToggle">
+                    <span>Режим:</span>
+                    <span id="modeIndicator">Вопрос → Ответ</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -104,48 +188,46 @@
         const displayText = document.getElementById('displayText');
         const modeToggle = document.getElementById('modeToggle');
         const modeIndicator = document.getElementById('modeIndicator');
-        const content = document.getElementById('content');
+        const status = document.getElementById('status');
+        const cardHeader = document.getElementById('cardHeader');
+        const card = document.getElementById('card');
 
         let data = [];
         let currentMode = 'question'; // 'question' или 'answer'
         let currentIndex = -1;
+        let isAnswerShown = false;
 
         jsonInput.addEventListener('change', handleFileLoad);
+        card.addEventListener('click', handleCardClick);
         modeToggle.addEventListener('click', toggleMode);
-        content.addEventListener('click', handleContentClick);
 
-    function handleFileLoad(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-    
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const parsedData = JSON.parse(e.target.result);
-                
-                // Детальная проверка структуры
-                if (!Array.isArray(parsedData)) {
-                    throw new Error('Корневой элемент должен быть массивом');
+        function handleFileLoad(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    data = JSON.parse(e.target.result);
+                    validateData(data);
+                    showRandomItem();
+                    updateStatus();
+                } catch (error) {
+                    alert(`Ошибка: ${error.message}`);
+                    resetUI();
                 }
-                
-                parsedData.forEach((item, index) => {
-                    if (typeof item.question !== 'string') {
-                        throw new Error(`Элемент ${index}: отсутствует/неверный question`);
-                    }
-                    if (typeof item.answer !== 'string') {
-                        throw new Error(`Элемент ${index}: отсутствует/неверный answer`);
-                    }
-                });
-    
-                data = parsedData;
-                showRandomItem();
-            } catch (error) {
-                alert(`Ошибка в строке ${error.lineNumber}: ${error.message}`);
-                data = [];
+            };
+            reader.readAsText(file);
+        }
+
+        function validateData(data) {
+            if (!Array.isArray(data)) throw new Error('Данные должны быть массивом');
+            if (!data.every(item => 
+                typeof item.question === 'string' && 
+                typeof item.answer === 'string')) {
+                throw new Error('Каждый элемент должен содержать строки question и answer');
             }
-        };
-        reader.readAsText(file);
-    }
+        }
 
         function showRandomItem() {
             if (data.length === 0) return;
@@ -155,47 +237,68 @@
             
             if (currentMode === 'question') {
                 displayText.textContent = item.question;
-                content.dataset.state = 'question';
+                cardHeader.textContent = 'Вопрос';
             } else {
                 displayText.textContent = item.answer;
-                content.dataset.state = 'answer';
+                cardHeader.textContent = 'Ответ';
+            }
+            
+            isAnswerShown = false;
+            updateStatus();
+            
+            // Анимация появления
+            displayText.style.opacity = 0;
+            setTimeout(() => {
+                displayText.style.opacity = 1;
+            }, 10);
+        }
+
+        function handleCardClick() {
+            if (data.length === 0) return jsonInput.click();
+
+            const item = data[currentIndex];
+
+            if (!isAnswerShown) {
+                if (currentMode === 'question') {
+                    displayText.textContent = item.answer;
+                    cardHeader.textContent = 'Ответ';
+                } else {
+                    displayText.textContent = item.question;
+                    cardHeader.textContent = 'Вопрос';
+                }
+                isAnswerShown = true;
+                
+                // Анимация ответа
+                displayText.style.opacity = 0;
+                setTimeout(() => {
+                    displayText.style.opacity = 1;
+                }, 200);
+            } else {
+                showRandomItem();
             }
         }
 
         function toggleMode() {
             currentMode = currentMode === 'question' ? 'answer' : 'question';
-            modeIndicator.textContent = `Режим: ${currentMode === 'question' ? 'Вопрос → Ответ' : 'Ответ → Вопрос'}`;
+            modeIndicator.textContent = currentMode === 'question' ? 'Вопрос → Ответ' : 'Ответ → Вопрос';
             
             if (data.length > 0) {
-                const item = data[currentIndex];
-                displayText.textContent = currentMode === 'question' ? item.question : item.answer;
-                content.dataset.state = currentMode;
-            }
-        }
-
-        function handleContentClick() {
-            if (!data.length) return jsonInput.click();
-
-            if (content.dataset.state === currentMode) {
                 showRandomItem();
-            } else {
-                const item = data[currentIndex];
-                displayText.textContent = currentMode === 'question' ? item.answer : item.question;
-                content.dataset.state = currentMode;
             }
         }
 
-        // Пример корректного JSON:
-        // [
-        //     {
-        //         "question": "Что такое HTML?",
-        //         "answer": "Язык гипертекстовой разметки для создания веб-страниц"
-        //     },
-        //     {
-        //         "question": "Какой тег используется для заголовков?",
-        //         "answer": "<h1> до <h6>"
-        //     }
-        // ]
+        function updateStatus() {
+            status.textContent = `${currentIndex + 1} / ${data.length}`;
+        }
+
+        function resetUI() {
+            data = [];
+            currentIndex = -1;
+            displayText.textContent = 'Загрузите JSON файл';
+            cardHeader.textContent = 'Вопрос';
+            status.textContent = '0 / 0';
+            isAnswerShown = false;
+        }
     </script>
 </body>
 </html>
