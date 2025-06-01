@@ -1,0 +1,1623 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameDev Hub - Мои Проекты</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Общие стили для геймерского дизайна */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a2e; /* Темно-синий фон */
+            color: #e0e0e0; /* Светлый текст */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Выравнивание по верху */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto; /* Разрешить прокрутку всего тела */
+        }
+
+        /* Пользовательские стили для прокрутки */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #2a2a4a; /* Темный трек */
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4a4a7a; /* Темно-фиолетовый ползунок */
+            border-radius: 6px;
+            border: 3px solid #2a2a4a; /* Отступ от трека */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6a6ad0; /* Светлее при наведении */
+        }
+
+        /* Основной контейнер приложения */
+        .app-container {
+            background-color: #2a2a4a; /* Чуть светлее фон для контейнера */
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 15px rgba(0, 255, 255, 0.1); /* Неоновое свечение */
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            min-height: 80vh;
+            overflow: hidden; /* Предотвратить прокрутку внутри контейнера, если не нужно */
+        }
+
+        /* Заголовки */
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ffff; /* Неоновый голубой */
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+        }
+
+        /* Кнопки */
+        .btn {
+            background: linear-gradient(145deg, #4a00e0, #8d00ff); /* Градиент от темно-фиолетового до ярко-фиолетового */
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(141, 0, 255, 0.4);
+            border: none;
+            cursor: pointer;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .btn:hover {
+            background: linear-gradient(145deg, #8d00ff, #4a00e0);
+            box-shadow: 0 6px 20px rgba(141, 0, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(141, 0, 255, 0.3);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(255, 255, 255, 0.15);
+            transition: all 0.75s ease-out;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+        }
+
+        .btn:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(145deg, #007bff, #00c6ff); /* Синий градиент */
+            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(145deg, #00c6ff, #007bff);
+            box-shadow: 0 6px 20px rgba(0, 198, 255, 0.6);
+        }
+
+        .btn-danger {
+            background: linear-gradient(145deg, #e00000, #ff4d4d); /* Красный градиент */
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(145deg, #ff4d4d, #e00000);
+            box-shadow: 0 6px 20px rgba(255, 77, 77, 0.6);
+        }
+
+        /* Карточки проектов */
+        .project-card {
+            background-color: #3a3a5a; /* Темно-фиолетовый */
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid #4a4a7a;
+            position: relative;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+        }
+
+        .project-card h3 {
+            margin-top: 0;
+            color: #00ffff;
+            text-shadow: none; /* Убрать тень для заголовков карточек */
+        }
+
+        .project-card p {
+            color: #c0c0c0;
+            font-size: 0.9em;
+        }
+
+        /* Формы и инпуты */
+        input[type="text"],
+        textarea {
+            background-color: #1a1a2e;
+            border: 1px solid #4a4a7a;
+            border-radius: 8px;
+            padding: 10px;
+            color: #e0e0e0;
+            outline: none;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+            background-color: #20203a;
+        }
+
+        label {
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Модальные окна */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: #2a2a4a;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), 0 0 15px rgba(0, 255, 255, 0.2);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Список элементов (идеи, заметки) */
+        .item-list {
+            background-color: #3a3a5a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 300px; /* Ограничить высоту для прокрутки */
+            overflow-y: auto;
+            border: 1px solid #4a4a7a;
+        }
+
+        .item-list-item {
+            background-color: #1a1a2e;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            border: 1px solid #2a2a4a;
+        }
+
+        .item-list-item:hover {
+            background-color: #20203a;
+            border-color: #00ffff;
+        }
+
+        .item-list-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .item-list-item .actions button {
+            margin-left: 8px;
+            padding: 6px 10px;
+            font-size: 0.8em;
+            border-radius: 5px;
+        }
+
+        /* Адаптивный дизайн */
+        @media (min-width: 768px) {
+            .app-container {
+                flex-direction: row;
+                min-height: 80vh;
+                height: auto; /* Allow height to adjust based on content */
+            }
+
+            .sidebar {
+                width: 300px;
+                min-width: 280px;
+                border-right: 1px solid #4a4a7a;
+                overflow-y: auto; /* Прокрутка для сайдбара */
+            }
+
+            .main-content {
+                flex-grow: 1;
+                overflow-y: auto; /* Прокрутка для основного контента */
+            }
+
+            .project-card {
+                padding: 20px;
+            }
+
+            .item-list {
+                max-height: none; /* Убрать ограничение высоты на больших экранах */
+            }
+        }
+
+        /* Сообщение об ошибке/успехе */
+        .message-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3a3a5a;
+            color: #e0e0e0;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .message-box.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Модальное окно для просмотра документов (GDD/TDD) */
+        .doc-modal-content {
+            max-width: 900px; /* Шире для документов */
+            max-height: 90vh; /* Ограничить высоту для прокрутки */
+            overflow-y: auto;
+            text-align: left; /* Выравнивание текста по левому краю */
+        }
+
+        /* Стили для Markdown внутри pre */
+        .doc-modal-content pre {
+            white-space: pre-wrap; /* Перенос строк для длинного текста */
+            word-wrap: break-word;
+            background-color: #1a1a2e;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #4a4a7a;
+            max-height: 70vh; /* Ограничить высоту для прокрутки внутри pre */
+            overflow-y: auto;
+            font-family: 'Inter', sans-serif; /* Использовать Inter для содержимого Markdown */
+            color: #e0e0e0;
+        }
+
+        /* Стили для элементов Markdown внутри pre */
+        .doc-modal-content pre h1,
+        .doc-modal-content pre h2,
+        .doc-modal-content pre h3,
+        .doc-modal-content pre h4,
+        .doc-modal-content pre h5,
+        .doc-modal-content pre h6 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ffff;
+            text-shadow: none;
+            margin-top: 1.5em; /* Увеличить отступ сверху для заголовков */
+            margin-bottom: 0.8em; /* Увеличить отступ снизу для заголовков */
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3); /* Добавить подчеркивание */
+            padding-bottom: 0.3em;
+        }
+        .doc-modal-content pre h1 { font-size: 2.2em; }
+        .doc-modal-content pre h2 { font-size: 1.9em; }
+        .doc-modal-content pre h3 { font-size: 1.6em; }
+        .doc-modal-content pre h4 { font-size: 1.3em; }
+        .doc-modal-content pre h5 { font-size: 1.1em; }
+        .doc-modal-content pre h6 { font-size: 1em; }
+
+
+        .doc-modal-content pre p {
+            margin-bottom: 1em;
+            line-height: 1.6; /* Увеличить межстрочный интервал */
+        }
+
+        .doc-modal-content pre ul,
+        .doc-modal-content pre ol {
+            margin-left: 25px; /* Увеличить отступ для списков */
+            margin-bottom: 1em;
+            list-style-position: outside; /* Маркеры снаружи */
+        }
+
+        .doc-modal-content pre ul li::marker {
+            color: #00ffff; /* Неоновый цвет для маркеров списка */
+        }
+
+        .doc-modal-content pre ol li::marker {
+            color: #8d00ff; /* Фиолетовый цвет для нумерации списка */
+        }
+
+        .doc-modal-content pre li {
+            margin-bottom: 0.6em; /* Увеличить отступ между пунктами списка */
+        }
+
+        .doc-modal-content pre strong {
+            color: #ffcc00; /* Желтый для жирного текста */
+        }
+
+        .doc-modal-content pre em {
+            color: #a0a0ff; /* Светло-фиолетовый для курсива */
+        }
+
+        .doc-modal-content pre blockquote {
+            border-left: 4px solid #00c6ff; /* Синяя полоса для цитат */
+            padding-left: 15px;
+            margin: 1em 0;
+            color: #c0c0c0;
+            font-style: italic;
+        }
+
+        .doc-modal-content pre hr {
+            border: none;
+            border-top: 1px dashed rgba(0, 255, 255, 0.3);
+            margin: 2em 0;
+        }
+
+        .doc-modal-content pre table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+
+        .doc-modal-content pre th,
+        .doc-modal-content pre td {
+            border: 1px solid #4a4a7a;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .doc-modal-content pre th {
+            background-color: #3a3a5a;
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .doc-modal-content pre tr:nth-child(even) {
+            background-color: #2a2a4a; /* Чередующийся фон для строк таблицы */
+        }
+
+        .doc-modal-content pre code {
+            background-color: #3a3a5a;
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-family: monospace;
+            color: #ffcc00; /* Желтый для кода */
+        }
+
+        .doc-modal-content pre pre code {
+            display: block;
+            padding: 10px;
+            overflow-x: auto;
+            background-color: #1a1a2e;
+            border: 1px solid #4a4a7a;
+        }
+
+        /* Стили для индикатора загрузки */
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #00ffff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1em;
+            margin-top: 15px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loading-indicator.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 255, 255, 0.3);
+            border-top: 4px solid #00ffff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="font-inter">
+    <div class="app-container">
+        <div class="sidebar p-6 flex flex-col gap-4">
+            <h1 class="text-3xl mb-4 text-center">GameDev Hub</h1>
+            <div class="flex flex-col gap-2">
+                <button id="newProjectBtn" class="btn">
+                    + Новый Проект
+                </button>
+                <button id="generateNewProjectBtn" class="btn btn-secondary">
+                    Сгенерировать Проект (ИИ)
+                </button>
+                <button id="exportDataBtn" class="btn btn-secondary">
+                    Экспорт Данных
+                </button>
+                <button id="importDataBtn" class="btn btn-secondary">
+                    Импорт Данных
+                </button>
+            </div>
+
+            <div id="projectList" class="flex-grow mt-4 overflow-y-auto pr-2">
+                <p class="text-center text-gray-400">Нет проектов. Нажмите "Новый Проект" для начала!</p>
+            </div>
+        </div>
+
+        <div id="mainContent" class="main-content p-6 flex-grow hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="projectName" class="text-4xl">Название Проекта</h2>
+                <div>
+                    <button id="editProjectBtn" class="btn btn-secondary mr-2">Редактировать</button>
+                    <button id="deleteProjectBtn" class="btn btn-danger">Удалить</button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-2xl mb-2">Описание Проекта</h3>
+                <p id="projectDescription" class="text-gray-300 bg-[#1a1a2e] p-4 rounded-lg border border-[#4a4a7a]"></p>
+            </div>
+
+            <div class="mb-6 p-4 rounded-lg bg-[#3a3a5a] border border-[#4a4a7a]">
+                <h3 class="text-2xl mb-4 text-center">Генерация с Нейросетью</h3>
+                <div class="flex flex-col md:flex-row justify-center gap-4">
+                    <button id="generateIdeaBtn" class="btn btn-secondary flex-1">
+                        Получить Новую Идею
+                    </button>
+                    <button id="generateGDDBtn" class="btn btn-secondary flex-1">
+                        Сгенерировать GDD
+                    </button>
+                    <button id="generateTDDBtn" class="btn btn-secondary flex-1">
+                        Сгенерировать ТЗ (Godot 4.4)
+                    </button>
+                </div>
+                <div class="flex flex-col md:flex-row justify-center gap-4 mt-2">
+                     <button id="generateHTML5TDDBtn" class="btn btn-secondary flex-1">
+                        Сгенерировать ТЗ (HTML5 Прототип)
+                    </button>
+                </div>
+                <div id="loadingIndicator" class="loading-indicator">
+                    <div class="spinner"></div>
+                    <span>Генерация...</span>
+                </div>
+                <div class="flex flex-col md:flex-row justify-center gap-4 mt-4">
+                    <button id="viewGDDBtn" class="btn flex-1 hidden">
+                        Просмотреть GDD
+                    </button>
+                    <button id="viewTDDBtn" class="btn flex-1 hidden">
+                        Просмотреть ТЗ (Godot)
+                    </button>
+                     <button id="viewHTML5TDDBtn" class="btn flex-1 hidden">
+                        Просмотреть ТЗ (HTML5)
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl">Идеи</h3>
+                        <button id="addIdeaBtn" class="btn btn-secondary text-sm px-3 py-2">+ Добавить Идею</button>
+                    </div>
+                    <div id="ideaList" class="item-list">
+                        <p class="text-center text-gray-400">Пока нет идей.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl">Заметки</h3>
+                        <button id="addNoteBtn" class="btn btn-secondary text-sm px-3 py-2">+ Добавить Заметку</button>
+                    </div>
+                    <div id="noteList" class="item-list">
+                        <p class="text-center text-gray-400">Пока нет заметок.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="projectModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="projectModalTitle">Новый Проект</h2>
+            <form id="projectForm" class="flex flex-col gap-4">
+                <div>
+                    <label for="projectNameInput">Название Проекта:</label>
+                    <input type="text" id="projectNameInput" required class="w-full">
+                </div>
+                <div>
+                    <label for="projectDescriptionInput">Описание:</label>
+                    <textarea id="projectDescriptionInput" rows="5" class="w-full"></textarea>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" id="cancelProjectBtn" class="btn btn-danger">Отмена</button>
+                    <button type="submit" class="btn">Сохранить Проект</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="itemModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="itemModalTitle">Новая Идея/Заметка</h2>
+            <form id="itemForm" class="flex flex-col gap-4">
+                <div>
+                    <label for="itemTextInput">Текст:</label>
+                    <textarea id="itemTextInput" rows="5" required class="w-full"></textarea>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" id="cancelItemBtn" class="btn btn-danger">Отмена</button>
+                    <button type="submit" class="btn">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="importModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="text-center">Импорт Данных</h2>
+            <p class="text-center text-gray-400 mb-4">Выберите файл JSON для импорта. Это заменит текущие данные.</p>
+            <input type="file" id="importFileInput" accept=".json" class="mb-4 w-full p-2 border border-[#4a4a7a] rounded-lg text-gray-300 bg-[#1a1a2e]">
+            <div class="flex justify-end gap-3">
+                <button type="button" id="cancelImportBtn" class="btn btn-danger">Отмена</button>
+                <button type="button" id="confirmImportBtn" class="btn">Импортировать</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="text-center text-red-400">Подтвердите Удаление</h2>
+            <p id="confirmMessage" class="text-center text-gray-300 mb-6">Вы уверены, что хотите удалить этот элемент?</p>
+            <div class="flex justify-center gap-4">
+                <button type="button" id="cancelConfirmBtn" class="btn btn-secondary">Отмена</button>
+                <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="docModal" class="modal-overlay">
+        <div class="modal-content doc-modal-content">
+            <h2 id="docModalTitle" class="text-center">Документ</h2>
+            <pre id="docModalContent" class="whitespace-pre-wrap text-gray-200"></pre>
+            <div class="flex justify-end gap-3 mt-4">
+                <button type="button" id="copyDocContentBtn" class="btn btn-secondary">Копировать</button>
+                <button type="button" id="closeDocModalBtn" class="btn btn-secondary">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box">
+        <p id="messageText"></p>
+    </div>
+
+    <script>
+        // Глобальные переменные
+        let projects = [];
+        let currentProjectId = null;
+        let currentItemType = null; // 'idea' или 'note'
+        let currentItemId = null; // ID идеи/заметки для редактирования
+
+        // Получение элементов DOM
+        const projectListDiv = document.getElementById('projectList');
+        const mainContentDiv = document.getElementById('mainContent');
+        const projectNameElem = document.getElementById('projectName');
+        const projectDescriptionElem = document.getElementById('projectDescription');
+        const ideaListDiv = document.getElementById('ideaList');
+        const noteListDiv = document.getElementById('noteList');
+
+        // Кнопки
+        const newProjectBtn = document.getElementById('newProjectBtn');
+        const generateNewProjectBtn = document.getElementById('generateNewProjectBtn'); // Новая кнопка
+        const editProjectBtn = document.getElementById('editProjectBtn');
+        const deleteProjectBtn = document.getElementById('deleteProjectBtn');
+        const addIdeaBtn = document.getElementById('addIdeaBtn');
+        const addNoteBtn = document.getElementById('addNoteBtn');
+        const exportDataBtn = document.getElementById('exportDataBtn');
+        const importDataBtn = document.getElementById('importDataBtn');
+
+        // Кнопки для нейросети
+        const generateIdeaBtn = document.getElementById('generateIdeaBtn');
+        const generateGDDBtn = document.getElementById('generateGDDBtn');
+        const generateTDDBtn = document.getElementById('generateTDDBtn');
+        const generateHTML5TDDBtn = document.getElementById('generateHTML5TDDBtn');
+        const viewGDDBtn = document.getElementById('viewGDDBtn');
+        const viewTDDBtn = document.getElementById('viewTDDBtn');
+        const viewHTML5TDDBtn = document.getElementById('viewHTML5TDDBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        // Модальные окна и их элементы
+        const projectModal = document.getElementById('projectModal');
+        const projectModalTitle = document.getElementById('projectModalTitle');
+        const projectForm = document.getElementById('projectForm');
+        const projectNameInput = document.getElementById('projectNameInput');
+        const projectDescriptionInput = document.getElementById('projectDescriptionInput');
+        const cancelProjectBtn = document.getElementById('cancelProjectBtn');
+
+        const itemModal = document.getElementById('itemModal');
+        const itemModalTitle = document.getElementById('itemModalTitle');
+        const itemForm = document.getElementById('itemForm');
+        const itemTextInput = document.getElementById('itemTextInput');
+        const cancelItemBtn = document.getElementById('cancelItemBtn');
+
+        const importModal = document.getElementById('importModal');
+        const importFileInput = document.getElementById('importFileInput');
+        const confirmImportBtn = document.getElementById('confirmImportBtn');
+        const cancelImportBtn = document.getElementById('cancelImportBtn');
+
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmMessage = document.getElementById('confirmMessage');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+
+        const docModal = document.getElementById('docModal');
+        const docModalTitle = document.getElementById('docModalTitle');
+        const docModalContent = document.getElementById('docModalContent');
+        const closeDocModalBtn = document.getElementById('closeDocModalBtn');
+        const copyDocContentBtn = document.getElementById('copyDocContentBtn'); // Новая кнопка копирования
+
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+
+        // --- Функции для работы с данными (localStorage) ---
+
+        /**
+         * Сохраняет массив проектов в localStorage.
+         */
+        function saveData() {
+            try {
+                localStorage.setItem('gameDevProjects', JSON.stringify(projects));
+                showMessage('Данные сохранены!', 'success');
+            } catch (e) {
+                console.error("Ошибка сохранения данных:", e);
+                showMessage('Ошибка сохранения данных.', 'error');
+            }
+        }
+
+        /**
+         * Загружает массив проектов из localStorage.
+         */
+        function loadData() {
+            try {
+                const storedProjects = localStorage.getItem('gameDevProjects');
+                if (storedProjects) {
+                    projects = JSON.parse(storedProjects);
+                } else {
+                    projects = [];
+                }
+            } catch (e) {
+                console.error("Ошибка загрузки данных:", e);
+                showMessage('Ошибка загрузки данных. Возможно, повреждены.', 'error');
+                projects = []; // Сбросить, если данные повреждены
+            }
+        }
+
+        // --- Функции для работы с UI ---
+
+        /**
+         * Показывает всплывающее сообщение.
+         * @param {string} message - Текст сообщения.
+         * @param {string} type - Тип сообщения ('success' или 'error').
+         */
+        function showMessage(message, type) {
+            messageText.textContent = message;
+            messageBox.className = 'message-box active'; // Сброс классов и активация
+            if (type === 'success') {
+                messageBox.style.backgroundColor = '#4CAF50'; // Зеленый для успеха
+            } else if (type === 'error') {
+                messageBox.style.backgroundColor = '#f44336'; // Красный для ошибки
+            } else {
+                messageBox.style.backgroundColor = '#3a3a5a'; // Дефолтный
+            }
+
+            setTimeout(() => {
+                messageBox.classList.remove('active');
+            }, 3000); // Сообщение исчезнет через 3 секунды
+        }
+
+        /**
+         * Отображает список проектов в боковой панели.
+         */
+        function displayProjects() {
+            projectListDiv.innerHTML = ''; // Очистить список
+            if (projects.length === 0) {
+                projectListDiv.innerHTML = '<p class="text-center text-gray-400">Нет проектов. Нажмите "Новый Проект" для начала!</p>';
+                mainContentDiv.classList.add('hidden'); // Скрыть детали, если нет проектов
+                return;
+            }
+
+            // Сортировка проектов по дате последнего изменения (новые сверху)
+            projects.sort((a, b) => b.lastModified - a.lastModified);
+
+            projects.forEach(project => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card';
+                projectCard.dataset.id = project.id;
+                projectCard.innerHTML = `
+                    <h3 class="text-xl font-bold mb-1">${project.name}</h3>
+                    <p class="text-sm text-gray-400">${project.description.substring(0, 70)}${project.description.length > 70 ? '...' : ''}</p>
+                    <p class="text-xs text-gray-500 mt-2">Обновлено: ${new Date(project.lastModified).toLocaleString()}</p>
+                `;
+                projectCard.addEventListener('click', () => selectProject(project.id));
+                projectListDiv.appendChild(projectCard);
+            });
+
+            // Если выбран проект, убедиться, что он все еще отображается
+            if (currentProjectId) {
+                const selectedCard = document.querySelector(`.project-card[data-id="${currentProjectId}"]`);
+                if (selectedCard) {
+                    selectedCard.classList.add('border-l-4', 'border-00ffff'); // Подсветить выбранный проект
+                } else {
+                    // Если текущего проекта больше нет (например, был удален), выбрать первый или скрыть детали
+                    if (projects.length > 0) {
+                        selectProject(projects[0].id);
+                    } else {
+                        mainContentDiv.classList.add('hidden');
+                        currentProjectId = null;
+                    }
+                }
+            } else if (projects.length > 0) {
+                // Если нет выбранного проекта, но есть проекты, выбрать первый
+                selectProject(projects[0].id);
+            }
+        }
+
+        /**
+         * Отображает детали выбранного проекта.
+         * @param {string} projectId - ID проекта.
+         */
+        function selectProject(projectId) {
+            currentProjectId = projectId;
+            const project = projects.find(p => p.id === projectId);
+
+            if (!project) {
+                showMessage('Проект не найден.', 'error');
+                mainContentDiv.classList.add('hidden');
+                currentProjectId = null;
+                displayProjects(); // Перерисовать список, чтобы убрать подсветку
+                return;
+            }
+
+            // Убрать подсветку со всех карточек и добавить к выбранной
+            document.querySelectorAll('.project-card').forEach(card => {
+                card.classList.remove('border-l-4', 'border-00ffff');
+            });
+            const selectedCard = document.querySelector(`.project-card[data-id="${projectId}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('border-l-4', 'border-00ffff');
+            }
+
+            projectNameElem.textContent = project.name;
+            projectDescriptionElem.textContent = project.description || 'Нет описания.';
+
+            displayItems(project.ideas, ideaListDiv, 'idea');
+            displayItems(project.notes, noteListDiv, 'note');
+
+            // Показать/скрыть кнопки просмотра GDD/TDD
+            if (project.gdd && project.gdd.trim() !== '') {
+                viewGDDBtn.classList.remove('hidden');
+            } else {
+                viewGDDBtn.classList.add('hidden');
+            }
+            if (project.tdd && project.tdd.trim() !== '') {
+                viewTDDBtn.classList.remove('hidden');
+            } else {
+                viewTDDBtn.classList.add('hidden');
+            }
+            if (project.html5Tdd && project.html5Tdd.trim() !== '') { // Новая проверка
+                viewHTML5TDDBtn.classList.remove('hidden');
+            } else {
+                viewHTML5TDDBtn.classList.add('hidden');
+            }
+
+            mainContentDiv.classList.remove('hidden');
+        }
+
+        /**
+         * Отображает список идей или заметок для текущего проекта.
+         * @param {Array<Object>} items - Массив идей или заметок.
+         * @param {HTMLElement} container - Контейнер для отображения.
+         * @param {string} type - Тип элемента ('idea' или 'note').
+         */
+        function displayItems(items, container, type) {
+            container.innerHTML = '';
+            if (items.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-400">Пока нет ${type === 'idea' ? 'идей' : 'заметок'}.</p>`;
+                return;
+            }
+
+            // Сортировка элементов по дате создания (новые сверху)
+            items.sort((a, b) => b.createdAt - a.createdAt);
+
+            items.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item-list-item';
+                itemDiv.dataset.id = item.id;
+                itemDiv.innerHTML = `
+                    <span class="flex-grow">${item.text.substring(0, 100)}${item.text.length > 100 ? '...' : ''}</span>
+                    <div class="actions">
+                        <button class="btn btn-secondary text-xs edit-item-btn" data-type="${type}" data-id="${item.id}">Редактировать</button>
+                        <button class="btn btn-danger text-xs delete-item-btn" data-type="${type}" data-id="${item.id}">Удалить</button>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        /**
+         * Открывает модальное окно.
+         * @param {HTMLElement} modal - Элемент модального окна.
+         */
+        function openModal(modal) {
+            modal.classList.add('active');
+        }
+
+        /**
+         * Закрывает модальное окно.
+         * @param {HTMLElement} modal - Элемент модального окна.
+         */
+        function closeModal(modal) {
+            modal.classList.remove('active');
+        }
+
+        /**
+         * Устанавливает состояние загрузки для кнопок LLM.
+         * @param {boolean} isLoading - True, если идет загрузка, false иначе.
+         */
+        function setLoadingState(isLoading) {
+            const buttons = [generateIdeaBtn, generateGDDBtn, generateTDDBtn, generateHTML5TDDBtn, generateNewProjectBtn]; // Добавлена новая кнопка
+            buttons.forEach(btn => {
+                btn.disabled = isLoading;
+                if (isLoading) {
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            });
+
+            if (isLoading) {
+                loadingIndicator.classList.add('active');
+            } else {
+                loadingIndicator.classList.remove('active');
+            }
+        }
+
+        // --- Функции для манипуляции данными ---
+
+        /**
+         * Добавляет или обновляет проект.
+         * @param {Object} projectData - Данные проекта.
+         */
+        function upsertProject(projectData) {
+            const now = Date.now();
+            if (projectData.id) {
+                // Обновление существующего проекта
+                const index = projects.findIndex(p => p.id === projectData.id);
+                if (index !== -1) {
+                    projects[index] = { ...projects[index], ...projectData, lastModified: now };
+                    showMessage('Проект обновлен!', 'success');
+                } else {
+                    showMessage('Ошибка: Проект для обновления не найден.', 'error');
+                }
+            } else {
+                // Создание нового проекта
+                const newProject = {
+                    id: crypto.randomUUID(), // Уникальный ID
+                    name: projectData.name,
+                    description: projectData.description,
+                    ideas: [],
+                    notes: [],
+                    gdd: '', // Новое поле для GDD
+                    tdd: '', // Новое поле для TDD
+                    html5Tdd: '', // Новое поле для HTML5 TDD
+                    createdAt: now,
+                    lastModified: now
+                };
+                projects.push(newProject);
+                showMessage('Новый проект создан!', 'success');
+                currentProjectId = newProject.id; // Выбрать новый проект
+            }
+            saveData();
+            displayProjects();
+            if (currentProjectId) {
+                selectProject(currentProjectId); // Обновить детали текущего проекта
+            }
+        }
+
+        /**
+         * Удаляет проект.
+         * @param {string} projectId - ID проекта для удаления.
+         */
+        function deleteProject(projectId) {
+            projects = projects.filter(p => p.id !== projectId);
+            saveData();
+            showMessage('Проект удален!', 'success');
+            currentProjectId = null; // Сбросить выбранный проект
+            displayProjects(); // Перерисовать список (скроет детали, если нет проектов)
+        }
+
+        /**
+         * Добавляет или обновляет идею/заметку.
+         * @param {string} text - Текст идеи/заметки.
+         * @param {string} type - Тип элемента ('idea' или 'note').
+         * @param {string|null} itemId - ID элемента для обновления (null для нового).
+         */
+        function upsertItem(text, type, itemId = null) {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project) {
+                showMessage('Ошибка: Проект не выбран.', 'error');
+                return;
+            }
+
+            const collection = type === 'idea' ? project.ideas : project.notes;
+            const now = Date.now();
+
+            if (itemId) {
+                // Обновление существующего элемента
+                const index = collection.findIndex(item => item.id === itemId);
+                if (index !== -1) {
+                    collection[index] = { ...collection[index], text: text, lastModified: now };
+                    showMessage(`${type === 'idea' ? 'Идея' : 'Заметка'} обновлена!`, 'success');
+                } else {
+                    showMessage(`Ошибка: ${type === 'idea' ? 'Идея' : 'Заметка'} для обновления не найдена.`, 'error');
+                }
+            } else {
+                // Создание нового элемента
+                const newItem = {
+                    id: crypto.randomUUID(),
+                    text: text,
+                    createdAt: now,
+                    lastModified: now
+                };
+                collection.push(newItem);
+                showMessage(`Новая ${type === 'idea' ? 'идея' : 'заметка'} добавлена!`, 'success');
+            }
+
+            project.lastModified = now; // Обновить время модификации проекта
+            saveData();
+            selectProject(currentProjectId); // Перерисовать детали проекта
+        }
+
+        /**
+         * Удаляет идею или заметку.
+         * @param {string} itemId - ID элемента для удаления.
+         * @param {string} type - Тип элемента ('idea' или 'note').
+         */
+        function deleteItem(itemId, type) {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project) {
+                showMessage('Ошибка: Проект не выбран.', 'error');
+                return;
+            }
+
+            if (type === 'idea') {
+                project.ideas = project.ideas.filter(item => item.id !== itemId);
+            } else if (type === 'note') {
+                project.notes = project.notes.filter(item => item.id !== itemId);
+            }
+            project.lastModified = Date.now(); // Обновить время модификации проекта
+            saveData();
+            showMessage(`${type === 'idea' ? 'Идея' : 'Заметка'} удалена!`, 'success');
+            selectProject(currentProjectId); // Перерисовать детали проекта
+        }
+
+        // --- Функции импорта/экспорта ---
+
+        /**
+         * Экспортирует все данные в JSON файл.
+         */
+        function exportData() {
+            const dataStr = JSON.stringify(projects, null, 2); // Красивое форматирование JSON
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `GameDevHub_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showMessage('Данные успешно экспортированы!', 'success');
+        }
+
+        /**
+         * Импортирует данные из JSON файла.
+         * @param {File} file - Выбранный JSON файл.
+         */
+        function importData(file) {
+            if (!file) {
+                showMessage('Файл не выбран.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const importedProjects = JSON.parse(event.target.result);
+                    // Проверяем, что импортированные данные соответствуют ожидаемой структуре
+                    if (Array.isArray(importedProjects) && importedProjects.every(p => p.id && p.name && Array.isArray(p.ideas) && Array.isArray(p.notes))) {
+                        // Добавляем отсутствующие поля (gdd, tdd, html5Tdd) для совместимости со старыми данными
+                        const sanitizedProjects = importedProjects.map(p => ({
+                            ...p,
+                            gdd: p.gdd || '',
+                            tdd: p.tdd || '',
+                            html5Tdd: p.html5Tdd || '' // Добавлено новое поле
+                        }));
+                        projects = sanitizedProjects; // Заменить текущие данные
+                        saveData();
+                        displayProjects();
+                        showMessage('Данные успешно импортированы!', 'success');
+                        closeModal(importModal);
+                    } else {
+                        showMessage('Неверный формат файла JSON. Убедитесь, что это действительный файл с проектами GameDev Hub.', 'error');
+                    }
+                } catch (e) {
+                    console.error("Ошибка парсинга JSON:", e);
+                    showMessage('Ошибка при чтении файла JSON. Убедитесь, что это действительный файл.', 'error');
+                }
+            };
+            reader.onerror = () => {
+                showMessage('Ошибка чтения файла.', 'error');
+            };
+            reader.readAsText(file);
+        }
+
+        // --- Функции для взаимодействия с нейросетью (Gemini API) ---
+
+        /**
+         * Отправляет запрос к Gemini API.
+         * @param {string} prompt - Промпт для нейросети.
+         * @returns {Promise<string>} - Сгенерированный текст.
+         */
+        async function callGeminiAPI(prompt) {
+            setLoadingState(true);
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Если вы хотите использовать модели, отличные от gemini-2.0-flash или imagen-3.0-generate-002, укажите здесь ключ API. В противном случае оставьте как есть.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API Error: ${response.status} - ${errorData.error.message || 'Unknown error'}`);
+                }
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    return text;
+                } else {
+                    throw new Error('Неожиданная структура ответа от API или отсутствующий контент.');
+                }
+            } catch (error) {
+                console.error("Ошибка вызова Gemini API:", error);
+                showMessage(`Ошибка генерации: ${error.message}`, 'error');
+                return null;
+            } finally {
+                setLoadingState(false);
+            }
+        }
+
+        /**
+         * Генерирует новый проект (название и описание) с помощью ИИ.
+         */
+        async function generateNewProjectWithAI() {
+            const prompt = `Придумайте совершенно новую, уникальную и никогда ранее не реализованную идею для видеоигры. Сгенерируйте название игры и краткое, но интригующее описание.
+            Формат ответа:
+            Название: [Название игры]
+            Описание: [Краткое описание игры]`;
+
+            const responseText = await callGeminiAPI(prompt);
+            if (responseText) {
+                const lines = responseText.split('\n');
+                let name = '';
+                let description = '';
+
+                for (const line of lines) {
+                    if (line.startsWith('Название:')) {
+                        name = line.substring('Название:'.length).trim();
+                    } else if (line.startsWith('Описание:')) {
+                        description = line.substring('Описание:'.length).trim();
+                    }
+                }
+
+                if (name && description) {
+                    upsertProject({ name, description });
+                    showMessage('Новый проект успешно сгенерирован ИИ!', 'success');
+                } else {
+                    showMessage('Не удалось разобрать сгенерированный проект. Попробуйте еще раз.', 'error');
+                }
+            }
+        }
+
+        /**
+         * Генерирует новую идею для текущего проекта.
+         */
+        async function generateNewIdea() {
+            if (!currentProjectId) {
+                showMessage('Выберите проект, чтобы сгенерировать идею.', 'error');
+                return;
+            }
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project) return;
+
+            const existingIdeas = project.ideas.map(idea => `- ${idea.text}`).join('\n');
+            const prompt = `Придумайте совершенно новую, уникальную и ранее никогда не реализованную игровую фичу для игры "${project.name}". Опишите ее ОДНОЙ КОРОТКОЙ ФРАЗОЙ.
+            Название игры: ${project.name}
+            Описание игры: ${project.description}
+            Существующие идеи:
+            ${existingIdeas || 'Нет существующих идей.'}
+
+            Новая фича (одна фраза):`;
+
+            const newIdeaText = await callGeminiAPI(prompt);
+            if (newIdeaText) {
+                upsertItem(newIdeaText, 'idea');
+                showMessage('Новая идея успешно сгенерирована и добавлена!', 'success');
+            }
+        }
+
+        /**
+         * Генерирует и сохраняет Game Design Document (GDD) для текущего проекта.
+         */
+        async function generateGDD() {
+            if (!currentProjectId) {
+                showMessage('Выберите проект, чтобы сгенерировать GDD.', 'error');
+                return;
+            }
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project) return;
+
+            const allProjectData = {
+                name: project.name,
+                description: project.description,
+                ideas: project.ideas.map(i => i.text),
+                notes: project.notes.map(n => n.text),
+                gdd: project.gdd,
+                tdd: project.tdd,
+                html5Tdd: project.html5Tdd
+            };
+
+            const prompt = `Сгенерируйте подробный Документ Дизайна Игры (Game Design Document - GDD) для игрового проекта. Включите разделы:
+            - Название Игры
+            - Обзор/Концепция
+            - Основной Геймплейный Цикл
+            - Сюжет/Сеттинг
+            - Персонажи (краткие описания)
+            - Локации (краткие описания)
+            - Ключевые Особенности
+            - Целевая Аудитория
+            - Монетизация (если применимо, кратко)
+
+            Используйте всю следующую информацию о проекте:
+            ${JSON.stringify(allProjectData, null, 2)}
+
+            Убедитесь, что GDD хорошо структурирован и всеобъемлющ. Форматируйте ответ как Markdown.`;
+
+            const gddContent = await callGeminiAPI(prompt);
+            if (gddContent) {
+                project.gdd = gddContent;
+                project.lastModified = Date.now();
+                saveData();
+                selectProject(currentProjectId); // Обновить UI для показа кнопки просмотра GDD
+                showMessage('GDD успешно сгенерирован и сохранен!', 'success');
+            }
+        }
+
+        /**
+         * Генерирует и сохраняет Technical Design Document (TDD) для Godot 4.4.
+         */
+        async function generateTDD() {
+            if (!currentProjectId) {
+                showMessage('Выберите проект, чтобы сгенерировать ТЗ.', 'error');
+                return;
+            }
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project) return;
+
+            const allProjectData = {
+                name: project.name,
+                description: project.description,
+                ideas: project.ideas.map(i => i.text),
+                notes: project.notes.map(n => n.text),
+                gdd: project.gdd,
+                tdd: project.tdd,
+                html5Tdd: project.html5Tdd
+            };
+
+            const prompt = `Сгенерируйте Техническое Задание (ТЗ) для реализации игры "${project.name}" с использованием движка Godot Engine 4.4. Сосредоточьтесь на технических аспектах, архитектурных соображениях и ключевых деталях реализации. Включите разделы:
+            - Название Игры
+            - Движок/Версия (Godot 4.4)
+            - Структура Проекта (рекомендуемая структура папок, сцен)
+            - Основные Системы (например, Движение Игрока, Боевая Система, Пользовательский Интерфейс, Система Инвентаря)
+            - Управление Активами (как будут организованы и использоваться ресурсы)
+            - Сохранение Данных (методы сохранения/загрузки прогресса)
+            - Потенциальные Проблемы и Решения
+            - Рекомендации по производительности
+
+            Используйте всю следующую информацию о проекте:
+            ${JSON.stringify(allProjectData, null, 2)}
+
+            ТЗ должно быть практичным и специфичным для Godot. Форматируйте ответ как Markdown.`;
+
+            const tddContent = await callGeminiAPI(prompt);
+            if (tddContent) {
+                project.tdd = tddContent;
+                project.lastModified = Date.now();
+                saveData();
+                selectProject(currentProjectId); // Обновить UI для показа кнопки просмотра TDD
+                showMessage('ТЗ успешно сгенерировано и сохранено!', 'success');
+            }
+        }
+
+        /**
+         * Генерирует и сохраняет Technical Design Document (TDD) для HTML5 прототипа с псевдографикой.
+         */
+        async function generateHTML5TDD() {
+            if (!currentProjectId) {
+                showMessage('Выберите проект, чтобы сгенерировать ТЗ для HTML5 прототипа.', 'error');
+                return;
+            }
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project) return;
+
+            const allProjectData = {
+                name: project.name,
+                description: project.description,
+                ideas: project.ideas.map(i => i.text),
+                notes: project.notes.map(n => n.text),
+                gdd: project.gdd,
+                tdd: project.tdd,
+                html5Tdd: project.html5Tdd
+            };
+
+            const prompt = `Сгенерируйте Техническое Задание (ТЗ) для создания максимально полноценного прототипа игры "${project.name}" на HTML5 с использованием псевдографики (простые фигуры, цвета, текст для отображения элементов). Сосредоточьтесь на архитектуре, реализации основных систем и взаимодействий в браузере. Включите разделы:
+            - Название Игры
+            - Платформа/Технологии (HTML5, JavaScript, Canvas API, CSS)
+            - Цель Прототипа (например, демонстрация ключевой механики)
+            - Структура Проекта (HTML, CSS, JS файлы, организация кода)
+            - Основной Игровой Цикл (инициализация, обновление, рендеринг)
+            - Рендеринг (использование Canvas API для псевдографики: квадраты, круги, линии, текст)
+            - Ввод Пользователя (обработка событий клавиатуры/мыши)
+            - Игровая Логика (основные механики, например, движение персонажа, взаимодействие с объектами)
+            - Управление Состоянием (как будут храниться игровые данные)
+            - Звук (если применимо, простые звуковые эффекты через Web Audio API)
+            - Потенциальные Проблемы и Решения (например, производительность, совместимость браузеров)
+            - Рекомендации по дальнейшему развитию
+
+            Используйте всю следующую информацию о проекте:
+            ${JSON.stringify(allProjectData, null, 2)}
+
+            ТЗ должно быть практичным и специфичным для HTML5 прототипа с псевдографикой. Форматируйте ответ как Markdown.`;
+
+            const html5TddContent = await callGeminiAPI(prompt);
+            if (html5TddContent) {
+                project.html5Tdd = html5TddContent;
+                project.lastModified = Date.now();
+                saveData();
+                selectProject(currentProjectId); // Обновить UI для показа кнопки просмотра HTML5 TDD
+                showMessage('ТЗ для HTML5 прототипа успешно сгенерировано и сохранено!', 'success');
+            }
+        }
+
+        /**
+         * Открывает модальное окно для просмотра GDD или TDD.
+         * @param {string} type - Тип документа ('gdd', 'tdd' или 'html5Tdd').
+         */
+        function viewDocument(type) {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project) {
+                showMessage('Проект не выбран.', 'error');
+                return;
+            }
+
+            let title = '';
+            let content = '';
+
+            if (type === 'gdd') {
+                title = 'Документ Дизайна Игры (GDD)';
+                content = project.gdd || 'GDD еще не сгенерирован.';
+            } else if (type === 'tdd') {
+                title = 'Техническое Задание (ТЗ Godot)';
+                content = project.tdd || 'ТЗ для Godot еще не сгенерировано.';
+            } else if (type === 'html5Tdd') { // Новая ветка для HTML5 TDD
+                title = 'Техническое Задание (ТЗ HTML5 Прототип)';
+                content = project.html5Tdd || 'ТЗ для HTML5 прототипа еще не сгенерировано.';
+            }
+
+            docModalTitle.textContent = title;
+            // Рендеринг Markdown в HTML
+            docModalContent.innerHTML = marked.parse(content);
+            openModal(docModal);
+        }
+
+        // --- Обработчики событий ---
+
+        // Открытие модального окна нового проекта
+        newProjectBtn.addEventListener('click', () => {
+            projectModalTitle.textContent = 'Новый Проект';
+            projectNameInput.value = '';
+            projectDescriptionInput.value = '';
+            projectForm.dataset.editId = ''; // Очистить ID для нового проекта
+            openModal(projectModal);
+        });
+
+        // Новая кнопка: Генерация нового проекта с помощью ИИ
+        generateNewProjectBtn.addEventListener('click', generateNewProjectWithAI);
+
+        // Открытие модального окна редактирования проекта
+        editProjectBtn.addEventListener('click', () => {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (project) {
+                projectModalTitle.textContent = 'Редактировать Проект';
+                projectNameInput.value = project.name;
+                projectDescriptionInput.value = project.description;
+                projectForm.dataset.editId = project.id; // Установить ID редактируемого проекта
+                openModal(projectModal);
+            } else {
+                showMessage('Выберите проект для редактирования.', 'error');
+            }
+        });
+
+        // Открытие модального окна подтверждения удаления проекта
+        deleteProjectBtn.addEventListener('click', () => {
+            if (currentProjectId) {
+                confirmMessage.textContent = `Вы уверены, что хотите удалить проект "${projectNameElem.textContent}"? Это действие необратимо.`;
+                confirmDeleteBtn.dataset.action = 'deleteProject';
+                confirmDeleteBtn.dataset.id = currentProjectId;
+                openModal(confirmModal);
+            } else {
+                showMessage('Выберите проект для удаления.', 'error');
+            }
+        });
+
+        // Открытие модального окна добавления идеи
+        addIdeaBtn.addEventListener('click', () => {
+            if (!currentProjectId) {
+                showMessage('Сначала выберите проект.', 'error');
+                return;
+            }
+            itemModalTitle.textContent = 'Новая Идея';
+            itemTextInput.value = '';
+            itemForm.dataset.type = 'idea';
+            itemForm.dataset.editId = ''; // Очистить ID для новой идеи
+            openModal(itemModal);
+        });
+
+        // Открытие модального окна добавления заметки
+        addNoteBtn.addEventListener('click', () => {
+            if (!currentProjectId) {
+                showMessage('Сначала выберите проект.', 'error');
+                return;
+            }
+            itemModalTitle.textContent = 'Новая Заметка';
+            itemTextInput.value = '';
+            itemForm.dataset.type = 'note';
+            itemForm.dataset.editId = ''; // Очистить ID для новой заметки
+            openModal(itemModal);
+        });
+
+        // Обработчик для кнопок редактирования/удаления идей/заметок (делегирование событий)
+        mainContentDiv.addEventListener('click', (event) => {
+            const target = event.target;
+            if (target.classList.contains('edit-item-btn')) {
+                const type = target.dataset.type;
+                const itemId = target.dataset.id;
+                const project = projects.find(p => p.id === currentProjectId);
+                const item = (type === 'idea' ? project.ideas : project.notes).find(i => i.id === itemId);
+
+                if (item) {
+                    itemModalTitle.textContent = `Редактировать ${type === 'idea' ? 'Идею' : 'Заметку'}`;
+                    itemTextInput.value = item.text;
+                    itemForm.dataset.type = type;
+                    itemForm.dataset.editId = itemId;
+                    openModal(itemModal);
+                }
+            } else if (target.classList.contains('delete-item-btn')) {
+                const type = target.dataset.type;
+                const itemId = target.dataset.id;
+                confirmMessage.textContent = `Вы уверены, что хотите удалить эту ${type === 'idea' ? 'идею' : 'заметку'}?`;
+                confirmDeleteBtn.dataset.action = 'deleteItem';
+                confirmDeleteBtn.dataset.type = type;
+                confirmDeleteBtn.dataset.id = itemId;
+                openModal(confirmModal);
+            }
+        });
+
+        // Отправка формы проекта (создание/редактирование)
+        projectForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const id = projectForm.dataset.editId;
+            const name = projectNameInput.value.trim();
+            const description = projectDescriptionInput.value.trim();
+
+            if (!name) {
+                showMessage('Название проекта не может быть пустым.', 'error');
+                return;
+            }
+
+            upsertProject({ id, name, description });
+            closeModal(projectModal);
+        });
+
+        // Отправка формы идеи/заметки (создание/редактирование)
+        itemForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const type = itemForm.dataset.type;
+            const id = itemForm.dataset.editId;
+            const text = itemTextInput.value.trim();
+
+            if (!text) {
+                showMessage('Текст не может быть пустым.', 'error');
+                return;
+            }
+
+            upsertItem(text, type, id);
+            closeModal(itemModal);
+        });
+
+        // Кнопки отмены модальных окон
+        cancelProjectBtn.addEventListener('click', () => closeModal(projectModal));
+        cancelItemBtn.addEventListener('click', () => closeModal(itemModal));
+        cancelImportBtn.addEventListener('click', () => closeModal(importModal));
+        cancelConfirmBtn.addEventListener('click', () => closeModal(confirmModal));
+        closeDocModalBtn.addEventListener('click', () => closeModal(docModal));
+
+        // Кнопка экспорта
+        exportDataBtn.addEventListener('click', exportData);
+
+        // Кнопка импорта (открытие модального окна)
+        importDataBtn.addEventListener('click', () => {
+            importFileInput.value = ''; // Очистить выбранный файл
+            openModal(importModal);
+        });
+
+        // Подтверждение импорта
+        confirmImportBtn.addEventListener('click', () => {
+            const file = importFileInput.files[0];
+            importData(file);
+        });
+
+        // Подтверждение удаления в модальном окне
+        confirmDeleteBtn.addEventListener('click', () => {
+            const action = confirmDeleteBtn.dataset.action;
+            const id = confirmDeleteBtn.dataset.id;
+            const type = confirmDeleteBtn.dataset.type; // Для идей/заметок
+
+            if (action === 'deleteProject') {
+                deleteProject(id);
+            } else if (action === 'deleteItem') {
+                deleteItem(id, type);
+            }
+            closeModal(confirmModal);
+        });
+
+        // Обработчики для кнопок LLM
+        generateIdeaBtn.addEventListener('click', generateNewIdea);
+        generateGDDBtn.addEventListener('click', generateGDD);
+        generateTDDBtn.addEventListener('click', generateGDD);
+        generateHTML5TDDBtn.addEventListener('click', generateHTML5TDD);
+        viewGDDBtn.addEventListener('click', () => viewDocument('gdd'));
+        viewTDDBtn.addEventListener('click', () => viewDocument('tdd'));
+        viewHTML5TDDBtn.addEventListener('click', () => viewDocument('html5Tdd'));
+
+        // Обработчик для новой кнопки копирования
+        copyDocContentBtn.addEventListener('click', () => {
+            const textToCopy = docModalContent.textContent;
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showMessage('Текст скопирован в буфер обмена!', 'success');
+            } catch (err) {
+                console.error('Не удалось скопировать текст: ', err);
+                showMessage('Ошибка при копировании текста.', 'error');
+            }
+            document.body.removeChild(textArea);
+        });
+
+
+        // --- Инициализация приложения ---
+        window.onload = () => {
+            loadData();
+            displayProjects();
+        };
+    </script>
+</body>
+</html>
+
+
+
+</body>
+</html>
