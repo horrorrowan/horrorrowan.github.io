@@ -6,16 +6,16 @@
     <title>QR Price Viewer & Cart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Base styles */
+        /* Базовые стили */
         body {
             font-family: 'Inter', sans-serif;
             overscroll-behavior: none;
-            background-color: #0d1117; /* Deeper dark background */
-            color: #e6edf3; /* Lighter text for contrast */
+            background-color: #0d1117; /* Более темный фон */
+            color: #e6edf3; /* Светлый текст для контраста */
             transition: background-color 0.3s ease;
         }
 
-        /* Video container to ensure full coverage */
+        /* Контейнер для видео, чтобы обеспечить полное покрытие */
         #video-container {
             position: absolute;
             top: 0;
@@ -33,44 +33,44 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Optional: Add a subtle vignette or border */
-            border-radius: 0; /* Keep full screen for video */
+            /* Необязательно: добавить тонкую виньетку или границу */
+            border-radius: 0; /* Оставить на весь экран для видео */
         }
 
-        /* Container for all dynamic price tags */
+        /* Контейнер для всех динамических ценников */
         #price-tags-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; /* Allows clicks to pass through to elements below unless a child explicitly sets pointer-events: auto */
+            pointer-events: none; /* Позволяет кликам проходить через элементы ниже, если дочерний элемент явно не устанавливает pointer-events: auto */
             z-index: 10;
         }
 
         .price-tag-item {
             position: absolute;
-            transform: translate(-50%, -110%) scale(0.9); /* Initial smaller scale */
-            /* Added transform to transition for smoother movement */
-            transition: opacity 0.3s ease, top 0.1s linear, left 0.1s linear, transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bounce effect for transform */
+            transform: translate(-50%, -110%) scale(0.9); /* Начальный меньший масштаб */
+            /* Добавленное преобразование для более плавного движения */
+            transition: opacity 0.3s ease, top 0.1s linear, left 0.1s linear, transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Эффект отскока для преобразования */
             z-index: 10;
-            pointer-events: auto; /* Make the price tag itself clickable */
-            opacity: 0; /* Initially hidden */
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(240, 240, 240, 0.9)); /* Lighter, more vibrant gradient */
-            backdrop-filter: blur(10px) saturate(1.5); /* Stronger blur and saturation */
+            pointer-events: auto; /* Сделать сам ценник кликабельным */
+            opacity: 0; /* Изначально скрыт */
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(240, 240, 240, 0.9)); /* Более светлый, яркий градиент */
+            backdrop-filter: blur(10px) saturate(1.5); /* Более сильное размытие и насыщенность */
             -webkit-backdrop-filter: blur(10px) saturate(1.5);
-            color: #1a202c; /* Darker text for contrast */
-            border-radius: 16px; /* More rounded */
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0, 0, 0, 0.15); /* Deeper, softer shadow */
+            color: #1a202c; /* Более темный текст для контраста */
+            border-radius: 16px; /* Более округлые */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0, 0, 0, 0.15); /* Более глубокая, мягкая тень */
             padding: 1rem;
-            width: 18rem; /* Slightly wider */
+            width: 18rem; /* Немного шире */
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border for definition */
-            animation: fadeInScale 0.3s ease-out forwards; /* Add an entry animation */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Тонкая граница для определения */
+            animation: fadeInScale 0.3s ease-out forwards; /* Добавить анимацию появления */
         }
         .price-tag-item.show {
             opacity: 1;
-            transform: translate(-50%, -110%) scale(1); /* Scale to normal size */
+            transform: translate(-50%, -110%) scale(1); /* Масштаб до нормального размера */
         }
 
         @keyframes fadeInScale {
@@ -84,20 +84,20 @@
             }
         }
 
-        /* Quantity control buttons within price tag */
+        /* Кнопки управления количеством в ценнике */
         .quantity-control {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            margin-bottom: 0.75rem; /* Space before Add to Cart button */
-            background-color: rgba(0, 0, 0, 0.05); /* Light background for controls */
+            margin-bottom: 0.75rem; /* Пространство перед кнопкой "Добавить в корзину" */
+            background-color: rgba(0, 0, 0, 0.05); /* Светлый фон для элементов управления */
             border-radius: 8px;
             padding: 0.25rem 0.5rem;
         }
 
         .quantity-btn {
-            background-color: #3b82f6; /* Blue */
+            background-color: #3b82f6; /* Синий */
             color: white;
             border: none;
             border-radius: 50%;
@@ -123,27 +123,27 @@
         .quantity-display {
             font-size: 1.2rem;
             font-weight: 700;
-            color: #1a202c; /* Dark text */
+            color: #1a202c; /* Темный текст */
             min-width: 30px;
             text-align: center;
         }
 
-        /* Cart modal and related styles */
+        /* Модальное окно корзины и связанные стили */
         #cart-modal {
             transition: opacity 0.3s ease, visibility 0.3s ease;
-            background-color: rgba(0, 0, 0, 0.85); /* Darker overlay */
+            background-color: rgba(0, 0, 0, 0.85); /* Более темный оверлей */
         }
         #cart-content {
-            background-color: #1a202c; /* Darker content background */
+            background-color: #1a202c; /* Темный фон содержимого */
             color: #e6edf3;
-            border-radius: 16px 16px 0 0; /* More prominent top corners */
+            border-radius: 16px 16px 0 0; /* Более выраженные верхние углы */
             padding: 1.5rem;
-            box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.5); /* Deeper shadow */
-            transform: translateY(100%); /* Start off-screen */
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Ease-out cubic for slide */
-            max-width: 90%; /* Responsive width */
-            margin-bottom: 0; /* Ensure it sits at the bottom */
-            max-height: 80vh; /* Limit cart height */
+            box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.5); /* Более глубокая тень */
+            transform: translateY(100%); /* Начинается за экраном */
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Кубический эффект выхода для слайда */
+            max-width: 90%; /* Адаптивная ширина */
+            margin-bottom: 0; /* Гарантировать, что он находится внизу */
+            max-height: 80vh; /* Ограничить высоту корзины */
             display: flex;
             flex-direction: column;
         }
@@ -152,10 +152,10 @@
         }
 
         #cart-items {
-            flex-grow: 1; /* Allow cart items to take available space */
-            overflow-y: auto; /* Enable scrolling for items */
-            padding-right: 0.5rem; /* Space for scrollbar */
-            margin-bottom: 1rem; /* Space before total */
+            flex-grow: 1; /* Разрешить элементам корзины занимать доступное пространство */
+            overflow-y: auto; /* Включить прокрутку для элементов */
+            padding-right: 0.5rem; /* Пространство для полосы прокрутки */
+            margin-bottom: 1rem; /* Пространство перед итоговой суммой */
         }
 
         .cart-item {
@@ -164,13 +164,13 @@
             align-items: center;
             padding: 0.75rem 1rem;
             margin-bottom: 0.75rem;
-            background-color: #2d3748; /* Item background */
+            background-color: #2d3748; /* Фон элемента */
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            animation: slide-in-right 0.5s forwards ease-out; /* Specific animation */
-            opacity: 0; /* Start hidden for animation */
+            animation: slide-in-right 0.5s forwards ease-out; /* Специфическая анимация */
+            opacity: 0; /* Начинается скрытым для анимации */
         }
-        /* For new items added dynamically */
+        /* Для новых элементов, добавляемых динамически */
         .cart-item-enter {
             animation: slide-in-right 0.5s forwards ease-out;
             opacity: 0;
@@ -199,7 +199,7 @@
         }
         .cart-item-info .item-details {
             font-size: 0.875rem;
-            color: #a0aec0; /* Lighter grey */
+            color: #a0aec0; /* Более светлый серый */
         }
 
         .cart-item-controls {
@@ -209,7 +209,7 @@
         }
 
         .cart-quantity-btn {
-            background-color: #4a5568; /* Darker grey for cart buttons */
+            background-color: #4a5568; /* Более темный серый для кнопок корзины */
             color: white;
             border: none;
             border-radius: 50%;
@@ -242,8 +242,8 @@
         .cart-item-total {
             font-weight: bold;
             font-size: 1.125rem;
-            color: #60a5fa; /* Blue accent */
-            margin-left: 1rem; /* Space from controls */
+            color: #60a5fa; /* Синий акцент */
+            margin-left: 1rem; /* Пространство от элементов управления */
             min-width: 70px;
             text-align: right;
         }
@@ -251,7 +251,7 @@
         .remove-item-btn {
             background: none;
             border: none;
-            color: #ef4444; /* Red for delete */
+            color: #ef4444; /* Красный для удаления */
             cursor: pointer;
             font-size: 1.2rem;
             padding: 0.25rem;
@@ -263,7 +263,7 @@
             color: #fca5a5;
         }
 
-        /* Toast notification */
+        /* Уведомление тостом */
         .toast-notification {
             position: fixed;
             bottom: -100px;
@@ -271,26 +271,26 @@
             transform: translateX(-50%);
             transition: bottom 0.5s ease-in-out, opacity 0.3s ease;
             z-index: 100;
-            background-color: #ef4444; /* Red for errors/notifications */
+            background-color: #ef4444; /* Красный для ошибок/уведомлений */
             color: white;
             padding: 0.75rem 1.5rem;
-            border-radius: 9999px; /* Fully rounded */
+            border-radius: 9999px; /* Полностью округлые */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             font-weight: 600;
-            opacity: 0; /* Start hidden */
+            opacity: 0; /* Начинается скрытым */
         }
         .toast-notification.show {
             bottom: 30px;
             opacity: 1;
         }
 
-        /* Button base styles */
+        /* Базовые стили кнопок */
         .app-button {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            border-radius: 9999px; /* Fully rounded buttons */
+            border-radius: 9999px; /* Полностью округлые кнопки */
             padding: 0.75rem 1.5rem;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
@@ -298,16 +298,16 @@
             outline: none;
             text-decoration: none;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            /* Add some depth on click */
+            /* Добавить некоторую глубину при клике */
             &:active {
                 transform: translateY(1px);
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             }
         }
 
-        /* Specific button styles */
+        /* Специфические стили кнопок */
         .btn-primary {
-            background: linear-gradient(45deg, #3b82f6, #2563eb); /* Blue gradient */
+            background: linear-gradient(45deg, #3b82f6, #2563eb); /* Синий градиент */
             color: white;
             &:hover {
                 background: linear-gradient(45deg, #2563eb, #1d4ed8);
@@ -317,7 +317,7 @@
         }
 
         .btn-success {
-            background: linear-gradient(45deg, #22c55e, #16a34a); /* Green gradient */
+            background: linear-gradient(45deg, #22c55e, #16a34a); /* Зеленый градиент */
             color: white;
             &:hover {
                 background: linear-gradient(45deg, #16a34a, #15803d);
@@ -329,45 +329,45 @@
         .btn-icon {
             background-color: rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 0.75rem; /* Smaller padding for icon buttons */
-            border-radius: 50%; /* Circular */
+            padding: 0.75rem; /* Меньший отступ для кнопок с иконками */
+            border-radius: 50%; /* Круглые */
             &:hover {
                 background-color: rgba(255, 255, 255, 0.3);
                 transform: scale(1.05);
             }
         }
 
-        /* Start screen specific styles */
+        /* Стили для начального экрана */
         #start-screen {
-            background: linear-gradient(135deg, rgba(13, 17, 23, 0.98), rgba(23, 27, 33, 0.95)); /* Subtle gradient overlay, slightly more opaque */
+            background: linear-gradient(135deg, rgba(13, 17, 23, 0.98), rgba(23, 27, 33, 0.95)); /* Тонкий градиентный оверлей, немного более непрозрачный */
             padding: 2rem;
             justify-content: center;
             align-items: center;
             text-align: center;
         }
         #start-screen h1 {
-            font-size: 2.8rem; /* Larger title */
-            font-weight: 900; /* Bolder */
+            font-size: 2.8rem; /* Более крупный заголовок */
+            font-weight: 900; /* Более жирный */
             margin-bottom: 1.5rem;
-            color: #60a5fa; /* Light blue accent */
-            text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+            color: #60a5fa; /* Светло-синий акцент */
+            text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4); /* Более глубокая тень */
         }
         #start-screen p {
-            font-size: 1.25rem; /* Slightly larger text */
+            font-size: 1.25rem; /* Немного больший текст */
             line-height: 1.7;
-            max-width: 28rem; /* Wider text block */
+            max-width: 28rem; /* Более широкий текстовый блок */
             color: #a8b3bf;
         }
 
-        /* Responsive adjustments */
+        /* Адаптивные настройки */
         @media (min-width: 768px) {
             #cart-content {
-                max-width: 32rem; /* Larger on desktop */
-                border-radius: 16px; /* Rounded corners all around for desktop */
-                margin-bottom: 1rem; /* Lift slightly from bottom */
+                max-width: 32rem; /* Больше на рабочем столе */
+                border-radius: 16px; /* Округлые углы по всему периметру для рабочего стола */
+                margin-bottom: 1rem; /* Немного приподнять от низа */
             }
             .price-tag-item {
-                width: 20rem; /* Even wider on desktop */
+                width: 20rem; /* Еще шире на рабочем столе */
                 padding: 1.25rem;
             }
         }
@@ -378,13 +378,17 @@
 </head>
 <body class="bg-gray-900 text-white m-0 p-0 h-screen overflow-hidden">
 
+    <!-- Контейнер видеопотока -->
     <div id="video-container">
         <video id="video" playsinline autoplay muted></video>
     </div>
 
+    <!-- Контейнер для всех динамических ценников -->
     <div id="price-tags-container">
-        </div>
+        <!-- Динамически добавляемые ценники будут здесь -->
+    </div>
 
+    <!-- Элементы управления -->
     <div class="absolute top-4 right-4 z-20">
         <button id="cart-button" class="app-button btn-icon relative">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -395,10 +399,12 @@
         </button>
     </div>
     
+    <!-- Уведомление Тостом -->
     <div id="toast" class="toast-notification">
         Товар не найден
     </div>
     
+    <!-- Модальное окно корзины -->
     <div id="cart-modal" class="fixed inset-0 z-40 flex justify-center items-end invisible opacity-0">
         <div id="cart-content" class="w-full rounded-t-2xl">
             <div class="flex justify-between items-center mb-6">
@@ -408,7 +414,8 @@
                 </button>
             </div>
             <div id="cart-items" class="max-h-60 overflow-y-auto mb-4 pr-2">
-                </div>
+                <!-- Элементы корзины будут добавлены здесь -->
+            </div>
             <div class="border-t border-gray-700 pt-4 mt-4">
                 <div class="flex justify-between items-center text-xl mb-4">
                     <span class="font-semibold">Итого:</span>
@@ -421,6 +428,7 @@
         </div>
     </div>
     
+    <!-- Начальный экран с инструкциями -->
     <div id="start-screen" class="absolute inset-0 z-50 flex flex-col justify-center items-center p-4">
         <h1 class="text-3xl font-bold mb-4">QR Price Scanner</h1>
         <p class="mb-8 max-w-md">Наведите камеру на QR или штрих-код, чтобы узнать цену и добавить товар в корзину.</p>
@@ -431,7 +439,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- DOM Elements ---
+            // --- DOM элементы ---
             const video = document.getElementById('video');
             const startScreen = document.getElementById('start-screen');
             const startScanBtn = document.getElementById('start-scan-btn');
@@ -446,18 +454,18 @@
             const saveCartBtn = document.getElementById('save-cart-btn');
             const toast = document.getElementById('toast');
 
-            // --- App State ---
+            // --- Состояние приложения ---
             let cart = [];
             /**
-             * Map to store currently visible or fading out price tag elements.
-             * Key: barcode rawValue (trimmed and normalized)
-             * Value: { element: HTMLElement, state: 'visible' | 'fadingOut' | 'processing', removeTimeoutId: number | null, quantity: number }
+             * Карта для хранения текущих видимых или исчезающих элементов ценников.
+             * Ключ: rawValue штрих-кода (обрезанный и нормализованный)
+             * Значение: { element: HTMLElement, state: 'visible' | 'fadingOut' | 'processing', removeTimeoutId: number | null, quantity: number }
              */
             let visiblePriceTags = new Map();
             let barcodeDetector;
             let stream;
 
-            // --- Mock API for prices ---
+            // --- Мок API для цен ---
             const mockProductDatabase = {
                 '9780321765723': { name: 'Книга "Рефакторинг"', price: 1550.50 },
                 '4601234567890': { name: 'Молоко "Простоквашино"', price: 89.99 },
@@ -468,13 +476,13 @@
             };
 
             /**
-             * Fetches product data based on a barcode.
-             * @param {string} barcode - The raw value of the detected barcode (already trimmed and normalized).
-             * @returns {Promise<Object|null>} A promise that resolves with product data or null if not found.
+             * Получает данные о продукте на основе штрих-кода.
+             * @param {string} barcode - Сырое значение обнаруженного штрих-кода (уже обрезанное и нормализованное).
+             * @returns {Promise<Object|null>} Промис, который разрешается с данными о продукте или null, если не найден.
              */
             async function fetchProductData(barcode) {
-                console.log(`Requesting price for code: ${barcode}`);
-                // Simulate network delay
+                console.log(`Запрос цены для кода: ${barcode}`);
+                // Имитация задержки сети
                 await new Promise(resolve => setTimeout(resolve, 300));
                 
                 if (mockProductDatabase[barcode]) {
@@ -483,15 +491,15 @@
                 return null;
             }
             
-            // --- Initialization ---
+            // --- Инициализация ---
             function init() {
-                // Check for BarcodeDetector API support
+                // Проверка поддержки API BarcodeDetector
                 if (!('BarcodeDetector' in window)) {
                     showToast('Ваш браузер не поддерживает API для сканирования кодов. Попробуйте Chrome на Android.');
                     return;
                 }
 
-                // Initialize BarcodeDetector with supported formats
+                // Инициализация BarcodeDetector с поддерживаемыми форматами
                 barcodeDetector = new BarcodeDetector({
                     formats: ['qr_code', 'ean_13', 'upc_a', 'code_128']
                 });
@@ -499,7 +507,7 @@
                 loadCart();
                 updateCartUI();
 
-                // Event listeners for UI interactions
+                // Слушатели событий для взаимодействия с UI
                 startScanBtn.addEventListener('click', startCamera);
                 cartButton.addEventListener('click', showCart);
                 closeCartBtn.addEventListener('click', hideCart);
@@ -507,55 +515,55 @@
             }
 
             /**
-             * Starts the camera and begins the continuous scanning loop.
+             * Запускает камеру и начинает непрерывный цикл сканирования.
              */
             async function startCamera() {
                 try {
                     stream = await navigator.mediaDevices.getUserMedia({
-                        video: { facingMode: 'environment' } // Prefer rear camera
+                        video: { facingMode: 'environment' } // Предпочитать заднюю камеру
                     });
                     video.srcObject = stream;
                     video.addEventListener('loadeddata', () => {
-                        startScreen.style.display = 'none'; // Hide the start screen
-                        requestAnimationFrame(tick); // Start the detection loop
+                        startScreen.style.display = 'none'; // Скрыть начальный экран
+                        requestAnimationFrame(tick); // Запустить цикл обнаружения
                     });
                 } catch (err) {
-                    console.error("Error accessing camera: ", err);
+                    console.error("Ошибка доступа к камере: ", err);
                     showToast("Не удалось получить доступ к камере. Пожалуйста, проверьте разрешения.");
                 }
             }
             
-            // --- Scanning Logic ---
+            // --- Логика сканирования ---
             async function tick() {
                 if (video.readyState === video.HAVE_ENOUGH_DATA) {
                     try {
                         const barcodes = await barcodeDetector.detect(video);
-                        handleMultipleDetections(barcodes); // Process all detected barcodes
+                        handleMultipleDetections(barcodes); // Обработать все обнаруженные штрих-коды
                     } catch (err) {
-                        // Sometimes the API might throw an error if the frame isn't ready
-                        console.warn("Detector error: ", err);
+                        // Иногда API может выбросить ошибку, если кадр не готов
+                        console.warn("Ошибка детектора: ", err);
                     }
                 }
-                // Continue the loop if the stream is active
+                // Продолжить цикл, если поток активен
                 if (stream && stream.active) {
                     requestAnimationFrame(tick);
                 }
             }
 
             /**
-             * Creates and displays a new price tag for a detected barcode.
-             * @param {string} code - The raw value of the barcode (already trimmed and normalized).
-             * @param {Array<Object>} corners - Corner points of the barcode.
-             * @param {Object} product - Product data (name, price, barcode - already trimmed and normalized).
-             * @param {number} scaleX - X-axis scaling factor from video to screen.
-             * @param {number} scaleY - Y-axis scaling factor from video to screen.
+             * Создает и отображает новый ценник для обнаруженного штрих-кода.
+             * @param {string} code - Сырое значение штрих-кода (уже обрезанное и нормализованное).
+             * @param {Array<Object>} corners - Угловые точки штрих-кода.
+             * @param {Object} product - Данные о продукте (имя, цена, штрих-код - уже обрезанные и нормализованные).
+             * @param {number} scaleX - Коэффициент масштабирования по оси X от видео к экрану.
+             * @param {number} scaleY - Коэффициент масштабирования по оси Y от видео к экрану.
              */
             function createPriceTag(code, corners, product, scaleX, scaleY) {
-                console.log(`Creating new price tag for code: ${code}`); // Log creation
-                // Create the price tag element
+                console.log(`Создание нового ценника для кода: ${code}`); // Логирование создания
+                // Создать элемент ценника
                 const priceTagEl = document.createElement('div');
-                priceTagEl.id = `price-tag-${code}`; // Unique ID for the tag using trimmed code
-                priceTagEl.className = 'price-tag-item'; // Class for general styling
+                priceTagEl.id = `price-tag-${code}`; // Уникальный ID для тега с использованием обрезанного кода
+                priceTagEl.className = 'price-tag-item'; // Класс для общего стиля
                 priceTagEl.innerHTML = `
                     <h3 class="font-bold text-lg mb-1">${product.name}</h3>
                     <p class="text-2xl font-bold text-blue-600 mb-3">${product.price.toFixed(2)} ₽</p>
@@ -569,17 +577,17 @@
                     </button>
                 `;
                 
-                // Add click listener for the 'Add to Cart' button within this tag
+                // Добавить слушатель кликов для кнопки 'Добавить в корзину' в этом теге
                 priceTagEl.querySelector('.add-to-cart-btn').addEventListener('click', (event) => {
-                    const clickedBarcode = event.target.dataset.barcode; // This code is already trimmed and normalized
+                    const clickedBarcode = event.target.dataset.barcode; // Этот код уже обрезан и нормализован
                     const quantity = parseInt(priceTagEl.querySelector('.quantity-display').textContent, 10);
-                    const productToAdd = { ...product, barcode: clickedBarcode }; // Ensure product.barcode is the normalized one
-                    addToCart(productToAdd, quantity); // Pass quantity
-                    // Remove the tag immediately after adding to cart
+                    const productToAdd = { ...product, barcode: clickedBarcode }; // Убедиться, что product.barcode нормализован
+                    addToCart(productToAdd, quantity); // Передать количество
+                    // Удалить тег сразу после добавления в корзину
                     removePriceTag(clickedBarcode, true); 
                 });
 
-                // Add quantity control listeners
+                // Добавить слушателей управления количеством
                 priceTagEl.querySelector('.decrease-quantity-btn').addEventListener('click', (event) => {
                     const barcode = event.target.dataset.barcode;
                     updatePriceTagQuantity(barcode, -1);
@@ -590,29 +598,29 @@
                 });
 
 
-                // Append the new price tag to the container
+                // Добавить новый ценник в контейнер
                 priceTagsContainer.appendChild(priceTagEl);
 
-                // Update the visiblePriceTags map with the actual element and 'visible' state, and initial quantity
+                // Обновить карту visiblePriceTags с фактическим элементом и состоянием 'visible', а также начальным количеством
                 visiblePriceTags.set(code, { element: priceTagEl, state: 'visible', removeTimeoutId: null, quantity: 1 });
 
-                // Position the new tag
+                // Расположить новый тег
                 updatePriceTagPosition(code, corners, scaleX, scaleY);
-                // Make it visible with a slight delay to ensure transition applies
+                // Сделать его видимым с небольшой задержкой, чтобы убедиться, что применяется переход
                 setTimeout(() => priceTagEl.classList.add('show'), 10);
             }
 
             /**
-             * Updates the quantity displayed on a price tag.
-             * @param {string} barcode - The barcode of the price tag.
-             * @param {number} change - The amount to change the quantity by (+1 or -1).
+             * Обновляет количество, отображаемое на ценнике.
+             * @param {string} barcode - Штрих-код ценника.
+             * @param {number} change - Значение, на которое нужно изменить количество (+1 или -1).
              */
             function updatePriceTagQuantity(barcode, change) {
                 const tagInfo = visiblePriceTags.get(barcode);
                 if (tagInfo && tagInfo.element) {
                     let currentQuantity = tagInfo.quantity;
                     currentQuantity += change;
-                    if (currentQuantity < 1) currentQuantity = 1; // Minimum quantity is 1
+                    if (currentQuantity < 1) currentQuantity = 1; // Минимальное количество - 1
 
                     tagInfo.quantity = currentQuantity;
                     tagInfo.element.querySelector('.quantity-display').textContent = currentQuantity;
@@ -621,11 +629,11 @@
 
 
             /**
-             * Updates the position of an existing price tag. If the tag was fading out, it becomes visible again.
-             * @param {string} code - The raw value of the barcode (already trimmed and normalized).
-             * @param {Array<Object>} corners - Corner points of the barcode.
-             * @param {number} scaleX - X-axis scaling factor from video to screen.
-             * @param {number} scaleY - Y-axis scaling factor from video to screen.
+             * Обновляет позицию существующего ценника. Если тег исчезал, он снова становится видимым.
+             * @param {string} code - Сырое значение штрих-кода (уже обрезанное и нормализованное).
+             * @param {Array<Object>} corners - Угловые точки штрих-кода.
+             * @param {number} scaleX - Коэффициент масштабирования по оси X от видео к экрану.
+             * @param {number} scaleY - Коэффициент масштабирования по оси Y от видео к экрану.
              */
             function updatePriceTagPosition(code, corners, scaleX, scaleY) {
                 const tagInfo = visiblePriceTags.get(code);
@@ -639,12 +647,12 @@
                     priceTagEl.style.left = `${centerX * scaleX}px`;
                     priceTagEl.style.top = `${centerY * scaleY}px`;
 
-                    // If the tag was in a fading out state, make it visible again
+                    // Если тег находился в состоянии исчезновения, снова сделать его видимым
                     if (tagInfo.state === 'fadingOut') {
-                        console.log(`Re-showing price tag for code: ${code}`); // Log re-showing
+                        console.log(`Повторное отображение ценника для кода: ${code}`); // Логирование повторного отображения
                         priceTagEl.classList.add('show');
                         tagInfo.state = 'visible';
-                        // Clear any pending removal timeout as it's now visible again
+                        // Очистить любой ожидающий тайм-аут удаления, так как он снова виден
                         if (tagInfo.removeTimeoutId) {
                             clearTimeout(tagInfo.removeTimeoutId);
                             tagInfo.removeTimeoutId = null;
@@ -654,65 +662,65 @@
             }
 
             /**
-             * Handles multiple barcode detections, updating, creating, or removing price tags.
-             * This function is crucial for ensuring only one price tag per barcode and managing their visibility.
-             * @param {Array<Object>} detectedBarcodes - Array of barcode objects from BarcodeDetector.
+             * Обрабатывает множественные обнаружения штрих-кодов, обновляя, создавая или удаляя ценники.
+             * Эта функция имеет решающее значение для обеспечения наличия только одного ценника на штрих-код и управления их видимостью.
+             * @param {Array<Object>} detectedBarcodes - Массив объектов штрих-кодов из BarcodeDetector.
              */
             async function handleMultipleDetections(detectedBarcodes) {
                 const videoRect = video.getBoundingClientRect();
                 const scaleX = videoRect.width / video.videoWidth;
                 const scaleY = videoRect.height / video.videoHeight;
 
-                // Step 1: Create a temporary map of detected codes in the current frame
-                // Key: barcode rawValue (trimmed and normalized)
-                // Value: original barcode object (for cornerPoints)
+                // Шаг 1: Создать временную карту обнаруженных кодов в текущем кадре
+                // Ключ: rawValue штрих-кода (обрезанный и нормализованный)
+                // Значение: исходный объект штрих-кода (для cornerPoints)
                 const currentFrameDetectedMap = new Map();
                 for (const barcode of detectedBarcodes) {
-                    // More aggressive trimming/normalization: remove all whitespace characters
+                    // Более агрессивное обрезание/нормализация: удалить все пробельные символы
                     const code = barcode.rawValue.replace(/\s/g, '').trim(); 
                     currentFrameDetectedMap.set(code, barcode);
                 }
 
-                // Step 2: Iterate through existing visible price tags
-                // Decide which to remove and which to update
-                // Use Array.from() to iterate over a copy, preventing issues if map changes during iteration
+                // Шаг 2: Перебрать существующие видимые ценники
+                // Решить, какие удалить, а какие обновить
+                // Использовать Array.from() для итерации по копии, предотвращая проблемы, если карта изменяется во время итерации
                 for (const [code, tagInfo] of Array.from(visiblePriceTags.entries())) {
                     if (currentFrameDetectedMap.has(code)) {
-                        // Barcode is still detected: update its position and ensure visibility
+                        // Штрих-код все еще обнаружен: обновить его позицию и обеспечить видимость
                         const barcodeInFrame = currentFrameDetectedMap.get(code);
                         updatePriceTagPosition(code, barcodeInFrame.cornerPoints, scaleX, scaleY);
-                        // Remove from currentFrameDetectedMap so it's not processed as "new" later
+                        // Удалить из currentFrameDetectedMap, чтобы он не обрабатывался как "новый" позже
                         currentFrameDetectedMap.delete(code);
                     } else {
-                        // Barcode is no longer detected: initiate its removal
+                        // Штрих-код больше не обнаружен: инициировать его удаление
                         removePriceTag(code);
                     }
                 }
 
-                // Step 3: Iterate through remaining detected codes (these are genuinely new ones)
-                // Create new price tags for them
+                // Шаг 3: Перебрать оставшиеся обнаруженные коды (это действительно новые)
+                // Создать для них новые ценники
                 for (const [code, barcodeInFrame] of currentFrameDetectedMap.entries()) {
-                    // BEFORE fetching, check if it's already being processed or visible
-                    // This prevents re-initiating the fetch and tag creation if it's already in the pipeline
+                    // ПЕРЕД получением, проверить, обрабатывается ли он уже или виден
+                    // Это предотвращает повторный запуск выборки и создания тега, если он уже находится в процессе
                     if (!visiblePriceTags.has(code)) {
-                        // Mark as processing immediately to prevent duplicates from concurrent ticks
-                        // Initialize with a default quantity of 1 for the price tag
+                        // Немедленно пометить как обрабатываемый, чтобы предотвратить дубликаты из параллельных тиков
+                        // Инициализировать с количеством по умолчанию 1 для ценника
                         visiblePriceTags.set(code, { element: null, state: 'processing', removeTimeoutId: null, quantity: 1 });
 
                         const product = await fetchProductData(code);
                         if (product) {
                             const productWithTrimmedBarcode = { ...product, barcode: code };
-                            // Check again, in case it was removed or became visible by another process during await
+                            // Проверить еще раз, на случай, если он был удален или стал видимым другим процессом во время ожидания
                             if (visiblePriceTags.has(code) && visiblePriceTags.get(code).state === 'processing') {
                                 createPriceTag(code, barcodeInFrame.cornerPoints, productWithTrimmedBarcode, scaleX, scaleY);
-                                // createPriceTag already sets the state to 'visible' and element, and initial quantity
+                                // createPriceTag уже устанавливает состояние на 'visible' и элемент, а также начальное количество
                             } else {
-                                // This case means it was already handled or removed while we were awaiting
-                                console.log(`Skipping tag creation for ${code}: state changed during fetch.`);
+                                // Этот случай означает, что он уже был обработан или удален, пока мы ждали
+                                console.log(`Пропуск создания тега для ${code}: состояние изменилось во время выборки.`);
                             }
                         } else {
                             showToast(`Товар для кода "${code}" не найден`);
-                            // If product not found, remove the 'processing' placeholder
+                            // Если товар не найден, удалить заглушку 'processing'
                             visiblePriceTags.delete(code);
                         }
                     }
@@ -720,55 +728,55 @@
             }
 
             /**
-             * Removes a price tag element from the DOM and the visiblePriceTags map.
-             * It supports a graceful fade-out or immediate removal.
-             * @param {string} code - The raw value of the barcode to remove (already trimmed and normalized).
-             * @param {boolean} immediate - If true, removes the tag instantly without fading.
+             * Удаляет элемент ценника из DOM и карты visiblePriceTags.
+             * Поддерживает плавное исчезновение или немедленное удаление.
+             * @param {string} code - Сырое значение штрих-кода для удаления (уже обрезанное и нормализованное).
+             * @param {boolean} immediate - Если true, удаляет тег мгновенно без исчезновения.
              */
             function removePriceTag(code, immediate = false) {
                 const tagInfo = visiblePriceTags.get(code);
-                if (tagInfo) { // Check if tagInfo exists at all
-                    // Clear any existing removal timeout to prevent conflicts
+                if (tagInfo) { // Проверить, существует ли tagInfo
+                    // Очистить любой существующий тайм-аут удаления, чтобы предотвратить конфликты
                     if (tagInfo.removeTimeoutId) {
                         clearTimeout(tagInfo.removeTimeoutId);
                         tagInfo.removeTimeoutId = null;
-                        console.log(`Cleared pending removal for code: ${code}`);
+                        console.log(`Очищено ожидающее удаление для кода: ${code}`);
                     }
 
-                    // Immediately remove if immediate flag is true OR if tag is in 'processing' state
+                    // Немедленно удалить, если флаг immediate установлен в true ИЛИ если тег находится в состоянии 'processing'
                     if (immediate || tagInfo.state === 'processing') {
-                        console.log(`Immediately removing price tag for code: ${code} (state: ${tagInfo.state})`);
-                        if (tagInfo.element) { // Only remove from DOM if element exists
+                        console.log(`Немедленное удаление ценника для кода: ${code} (состояние: ${tagInfo.state})`);
+                        if (tagInfo.element) { // Удалять из DOM только если элемент существует
                             tagInfo.element.remove();
                         }
                         visiblePriceTags.delete(code);
-                    } else if (tagInfo.state === 'visible') { // Only fade out if currently visible
-                        console.log(`Starting fade-out for price tag for code: ${code}`);
-                        tagInfo.element.classList.remove('show'); // Start fade out transition
-                        tagInfo.state = 'fadingOut'; // Mark state as fading out
+                    } else if (tagInfo.state === 'visible') { // Исчезать только если в данный момент виден
+                        console.log(`Начало исчезновения ценника для кода: ${code}`);
+                        tagInfo.element.classList.remove('show'); // Начать переход исчезновения
+                        tagInfo.state = 'fadingOut'; // Пометить состояние как исчезающее
 
-                        // Schedule actual DOM removal after transition completes
-                        // Increased timeout to give more buffer for re-detection
+                        // Запланировать фактическое удаление DOM после завершения перехода
+                        // Увеличен тайм-аут, чтобы дать больше времени для повторного обнаружения
                         tagInfo.removeTimeoutId = setTimeout(() => {
-                            // Only remove if it's still in 'fadingOut' state (i.e., not re-detected and made visible again)
+                            // Удалять только если он все еще находится в состоянии 'fadingOut' (т.е. не был повторно обнаружен и сделан видимым снова)
                             if (tagInfo.state === 'fadingOut') {
-                                console.log(`Completing fade-out removal for code: ${code}`);
+                                console.log(`Завершение удаления ценника по исчезновению для кода: ${code}`);
                                 tagInfo.element.remove();
-                                visiblePriceTags.delete(code); // Finally remove from map
+                                visiblePriceTags.delete(code); // Наконец, удалить из карты
                             } else {
-                                console.log(`Fade-out cancelled for code: ${code}, re-detected.`);
+                                console.log(`Исчезновение отменено для кода: ${code}, повторно обнаружено.`);
                             }
-                            tagInfo.removeTimeoutId = null; // Clear the timeout ID
-                        }, 1000); // Increased from 300ms to 1000ms
+                            tagInfo.removeTimeoutId = null; // Очистить ID тайм-аута
+                        }, 1000); // Увеличено с 300мс до 1000мс
                     }
                 }
             }
             
-            // --- Cart Management ---
+            // --- Управление корзиной ---
             /**
-             * Adds a product to the cart or increments its quantity if already exists.
-             * @param {Object} product - The product object to add (product.barcode is already trimmed and normalized).
-             * @param {number} quantity - The quantity to add. Defaults to 1.
+             * Добавляет товар в корзину или увеличивает его количество, если он уже существует.
+             * @param {Object} product - Объект продукта для добавления (product.barcode уже обрезан и нормализован).
+             * @param {number} quantity - Количество для добавления. По умолчанию 1.
              */
             function addToCart(product, quantity = 1) {
                 const existingItem = cart.find(item => item.barcode === product.barcode);
@@ -783,16 +791,16 @@
             }
 
             /**
-             * Updates the quantity of an item in the cart.
-             * @param {string} barcode - The barcode of the item to update.
-             * @param {number} change - The amount to change the quantity by (+1 or -1).
+             * Обновляет количество товара в корзине.
+             * @param {string} barcode - Штрих-код товара для обновления.
+             * @param {number} change - Значение, на которое нужно изменить количество (+1 или -1).
              */
             function updateCartItemQuantity(barcode, change) {
                 const itemIndex = cart.findIndex(item => item.barcode === barcode);
                 if (itemIndex > -1) {
                     cart[itemIndex].quantity += change;
                     if (cart[itemIndex].quantity <= 0) {
-                        // Remove item if quantity drops to 0 or less
+                        // Удалить товар, если количество падает до 0 или меньше
                         cart.splice(itemIndex, 1);
                     }
                     saveCart();
@@ -801,8 +809,8 @@
             }
 
             /**
-             * Removes an item completely from the cart.
-             * @param {string} barcode - The barcode of the item to remove.
+             * Полностью удаляет товар из корзины.
+             * @param {string} barcode - Штрих-код товара для удаления.
              */
             function removeCartItem(barcode) {
                 cart = cart.filter(item => item.barcode !== barcode);
@@ -812,22 +820,22 @@
             }
             
             /**
-             * Updates the cart UI, including item count and total price.
+             * Обновляет UI корзины, включая количество товаров и общую стоимость.
              */
             function updateCartUI() {
-                // Update cart count on the icon
+                // Обновить счетчик корзины на иконке
                 const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
                 cartCountEl.textContent = totalItems;
 
-                // Update cart modal content
+                // Обновить содержимое модального окна корзины
                 cartItemsEl.innerHTML = '';
                 if (cart.length === 0) {
                     cartItemsEl.innerHTML = '<p class="text-gray-400 text-center py-4">Корзина пуста</p>';
                 } else {
                     cart.forEach(item => {
                         const itemEl = document.createElement('div');
-                        itemEl.className = 'cart-item'; // Use cart-item class
-                        itemEl.setAttribute('data-barcode', item.barcode); // Add data-barcode for easy lookup
+                        itemEl.className = 'cart-item'; // Использовать класс cart-item
+                        itemEl.setAttribute('data-barcode', item.barcode); // Добавить data-barcode для легкого поиска
                         itemEl.innerHTML = `
                             <div class="cart-item-info">
                                 <p class="item-name">${item.name}</p>
@@ -848,7 +856,7 @@
                         cartItemsEl.appendChild(itemEl);
                     });
 
-                    // Add event listeners for cart item controls after they are rendered
+                    // Добавить слушателей событий для элементов управления корзиной после их рендеринга
                     cartItemsEl.querySelectorAll('.decrease-cart-quantity-btn').forEach(button => {
                         button.addEventListener('click', (event) => {
                             const barcode = event.target.dataset.barcode;
@@ -869,13 +877,13 @@
                     });
                 }
                 
-                // Update total price
+                // Обновить общую стоимость
                 const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
                 totalPriceEl.textContent = `${totalPrice.toFixed(2)} ₽`;
             }
 
             /**
-             * Shows the cart modal with a sliding animation.
+             * Показывает модальное окно корзины с анимацией скольжения.
              */
             function showCart() {
                 cartModal.classList.remove('invisible');
@@ -885,12 +893,12 @@
             }
 
             /**
-             * Hides the cart modal with a sliding animation.
+             * Скрывает модальное окно корзины с анимацией скольжения.
              */
             function hideCart() {
                 cartModal.style.opacity = '0';
                 cartContent.style.transform = 'translateY(100%)';
-                // Wait for the transition to finish before making it invisible
+                // Ждать завершения перехода, прежде чем сделать его невидимым
                 setTimeout(() => {
                     cartModal.classList.add('invisible');
                     cartModal.classList.remove('visible');
@@ -898,7 +906,7 @@
             }
             
             /**
-             * Saves the current cart data to a JSON file and downloads it.
+             * Сохраняет текущие данные корзины в файл JSON и загружает его.
              */
             function saveCartToFile() {
                 const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -922,16 +930,16 @@
                 showToast("Корзина сохранена в cart.json");
             }
             
-            // --- Local Storage Functions ---
+            // --- Функции локального хранилища ---
             /**
-             * Saves the current cart array to local storage.
+             * Сохраняет текущий массив корзины в локальное хранилище.
              */
             function saveCart() {
                 localStorage.setItem('qrScannerCart', JSON.stringify(cart));
             }
 
             /**
-             * Loads the cart array from local storage on app startup.
+             * Загружает массив корзины из локального хранилища при запуске приложения.
              */
             function loadCart() {
                 const savedCart = localStorage.getItem('qrScannerCart');
@@ -940,20 +948,20 @@
                 }
             }
             
-            // --- Utility Functions ---
+            // --- Вспомогательные функции ---
             /**
-             * Displays a toast notification with the given message.
-             * @param {string} message - The message to display.
+             * Отображает всплывающее уведомление с заданным сообщением.
+             * @param {string} message - Сообщение для отображения.
              */
             function showToast(message) {
                 toast.textContent = message;
                 toast.classList.add('show');
                 setTimeout(() => {
                     toast.classList.remove('show');
-                }, 2500); // Hide toast after 2.5 seconds
+                }, 2500); // Скрыть тост через 2.5 секунды
             }
 
-            // --- Start the application ---
+            // --- Запуск приложения ---
             init();
         });
     </script>
