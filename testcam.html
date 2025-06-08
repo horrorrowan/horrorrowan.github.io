@@ -734,40 +734,42 @@
             function removePriceTag(code, immediate = false) {
                 const tagInfo = visiblePriceTags.get(code);
                 if (tagInfo) { // Проверить, существует ли tagInfo
-                    // Clear any existing removal timeout to prevent conflicts
+                    // console.log(`[removePriceTag] Called for code: ${code}, immediate: ${immediate}, current state: ${tagInfo.state}`);
+                    // Очистить любой существующий тайм-аут удаления, чтобы предотвратить конфликты
                     if (tagInfo.removeTimeoutId) {
                         clearTimeout(tagInfo.removeTimeoutId);
                         tagInfo.removeTimeoutId = null;
-                        console.log(`Cleared pending removal for code: ${code}`);
+                        // console.log(`[removePriceTag] Cleared pending removal for code: ${code}`);
                     }
 
-                    // Immediately remove if immediate flag is true OR if tag is in 'processing' state
+                    // Немедленно удалить, если флаг immediate установлен в true ИЛИ если тег находится в состоянии 'processing'
                     if (immediate || tagInfo.state === 'processing') {
-                        console.log(`Immediately removing price tag for code: ${code} (state: ${tagInfo.state})`);
-                        if (tagInfo.element) { // Only remove from DOM if element exists
+                        // console.log(`[removePriceTag] Immediately removing price tag for code: ${code} (state: ${tagInfo.state})`);
+                        if (tagInfo.element) { // Удалять из DOM только если элемент существует
                             tagInfo.element.remove();
                         }
                         visiblePriceTags.delete(code);
-                    } else if (tagInfo.state === 'visible') { // Only fade out if currently visible
-                        console.log(`Starting fade-out for price tag for code: ${code}`);
-                        tagInfo.element.classList.remove('show'); // Start fade out transition
-                        tagInfo.state = 'fadingOut'; // Mark state as fading out
+                    } else if (tagInfo.state === 'visible') { // Исчезать только если в данный момент виден
+                        // console.log(`[removePriceTag] Starting fade-out for price tag for code: ${code}`);
+                        tagInfo.element.classList.remove('show'); // Начать переход исчезновения
+                        tagInfo.state = 'fadingOut'; // Пометить состояние как исчезающее
 
-                        // Schedule actual DOM removal after transition completes
-                        // Уменьшено время до 500мс для более быстрого исчезновения
+                        // Запланировать фактическое удаление DOM после завершения перехода
+                        // Уменьшено время до 300мс для более быстрого исчезновения
                         tagInfo.removeTimeoutId = setTimeout(() => {
-                            // Only remove if it's still in 'fadingOut' state (i.e., not re-detected and made visible again)
+                            // Удалять только если он все еще находится в состоянии 'fadingOut' (т.е. не был повторно обнаружен и сделан видимым снова)
                             if (tagInfo.state === 'fadingOut') {
-                                console.log(`Completing fade-out removal for code: ${code}`);
+                                // console.log(`[removePriceTag] Completing fade-out removal for code: ${code}. Removing from DOM and map.`);
                                 tagInfo.element.remove();
-                                visiblePriceTags.delete(code); // Finally remove from map
+                                visiblePriceTags.delete(code); // Наконец, удалить из карты
                             } else {
-                                console.log(`Fade-out cancelled for code: ${code}, re-detected.`);
+                                // console.log(`[removePriceTag] Fade-out cancelled for code: ${code}, re-detected.`);
                             }
-                            tagInfo.removeTimeoutId = null; // Clear the timeout ID
-                        }, 500); // Уменьшено с 1000мс до 500мс
+                            tagInfo.removeTimeoutId = null; // Очистить ID тайм-аута
+                        }, 300); // Уменьшено с 500мс до 300мс
                     }
                 }
+                // else { console.log(`[removePriceTag] Tag info not found for code: ${code}`); }
             }
             
             // --- Управление корзиной ---
