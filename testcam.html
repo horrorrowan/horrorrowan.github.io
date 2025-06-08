@@ -239,14 +239,7 @@
             font-size: 1rem;
         }
 
-        .cart-item-total {
-            font-weight: bold;
-            font-size: 1.125rem;
-            color: #60a5fa; /* Синий акцент */
-            margin-left: 1rem; /* Пространство от элементов управления */
-            min-width: 70px;
-            text-align: right;
-        }
+        /* Удалена .cart-item-total */
 
         .remove-item-btn {
             background: none;
@@ -519,8 +512,13 @@
              */
             async function startCamera() {
                 try {
+                    // Запрос более высокого разрешения
                     stream = await navigator.mediaDevices.getUserMedia({
-                        video: { facingMode: 'environment' } // Предпочитать заднюю камеру
+                        video: { 
+                            facingMode: 'environment', // Предпочитать заднюю камеру
+                            width: { ideal: 1280 },  // Попросить ширину 1280px
+                            height: { ideal: 720 }   // Попросить высоту 720px
+                        } 
                     });
                     video.srcObject = stream;
                     video.addEventListener('loadeddata', () => {
@@ -736,38 +734,38 @@
             function removePriceTag(code, immediate = false) {
                 const tagInfo = visiblePriceTags.get(code);
                 if (tagInfo) { // Проверить, существует ли tagInfo
-                    // Очистить любой существующий тайм-аут удаления, чтобы предотвратить конфликты
+                    // Clear any existing removal timeout to prevent conflicts
                     if (tagInfo.removeTimeoutId) {
                         clearTimeout(tagInfo.removeTimeoutId);
                         tagInfo.removeTimeoutId = null;
-                        console.log(`Очищено ожидающее удаление для кода: ${code}`);
+                        console.log(`Cleared pending removal for code: ${code}`);
                     }
 
-                    // Немедленно удалить, если флаг immediate установлен в true ИЛИ если тег находится в состоянии 'processing'
+                    // Immediately remove if immediate flag is true OR if tag is in 'processing' state
                     if (immediate || tagInfo.state === 'processing') {
-                        console.log(`Немедленное удаление ценника для кода: ${code} (состояние: ${tagInfo.state})`);
-                        if (tagInfo.element) { // Удалять из DOM только если элемент существует
+                        console.log(`Immediately removing price tag for code: ${code} (state: ${tagInfo.state})`);
+                        if (tagInfo.element) { // Only remove from DOM if element exists
                             tagInfo.element.remove();
                         }
                         visiblePriceTags.delete(code);
-                    } else if (tagInfo.state === 'visible') { // Исчезать только если в данный момент виден
-                        console.log(`Начало исчезновения ценника для кода: ${code}`);
-                        tagInfo.element.classList.remove('show'); // Начать переход исчезновения
-                        tagInfo.state = 'fadingOut'; // Пометить состояние как исчезающее
+                    } else if (tagInfo.state === 'visible') { // Only fade out if currently visible
+                        console.log(`Starting fade-out for price tag for code: ${code}`);
+                        tagInfo.element.classList.remove('show'); // Start fade out transition
+                        tagInfo.state = 'fadingOut'; // Mark state as fading out
 
-                        // Запланировать фактическое удаление DOM после завершения перехода
-                        // Увеличен тайм-аут, чтобы дать больше времени для повторного обнаружения
+                        // Schedule actual DOM removal after transition completes
+                        // Уменьшено время до 500мс для более быстрого исчезновения
                         tagInfo.removeTimeoutId = setTimeout(() => {
-                            // Удалять только если он все еще находится в состоянии 'fadingOut' (т.е. не был повторно обнаружен и сделан видимым снова)
+                            // Only remove if it's still in 'fadingOut' state (i.e., not re-detected and made visible again)
                             if (tagInfo.state === 'fadingOut') {
-                                console.log(`Завершение удаления ценника по исчезновению для кода: ${code}`);
+                                console.log(`Completing fade-out removal for code: ${code}`);
                                 tagInfo.element.remove();
-                                visiblePriceTags.delete(code); // Наконец, удалить из карты
+                                visiblePriceTags.delete(code); // Finally remove from map
                             } else {
-                                console.log(`Исчезновение отменено для кода: ${code}, повторно обнаружено.`);
+                                console.log(`Fade-out cancelled for code: ${code}, re-detected.`);
                             }
-                            tagInfo.removeTimeoutId = null; // Очистить ID тайм-аута
-                        }, 1000); // Увеличено с 300мс до 1000мс
+                            tagInfo.removeTimeoutId = null; // Clear the timeout ID
+                        }, 500); // Уменьшено с 1000мс до 500мс
                     }
                 }
             }
@@ -796,15 +794,19 @@
              * @param {number} change - Значение, на которое нужно изменить количество (+1 или -1).
              */
             function updateCartItemQuantity(barcode, change) {
+                console.log(`Updating quantity for barcode: ${barcode}, change: ${change}`);
                 const itemIndex = cart.findIndex(item => item.barcode === barcode);
                 if (itemIndex > -1) {
                     cart[itemIndex].quantity += change;
                     if (cart[itemIndex].quantity <= 0) {
                         // Удалить товар, если количество падает до 0 или меньше
+                        console.log(`Removing item with barcode: ${barcode} due to quantity <= 0`);
                         cart.splice(itemIndex, 1);
                     }
                     saveCart();
                     updateCartUI();
+                } else {
+                    console.log(`Item with barcode: ${barcode} not found in cart.`);
                 }
             }
 
@@ -813,10 +815,17 @@
              * @param {string} barcode - Штрих-код товара для удаления.
              */
             function removeCartItem(barcode) {
+                console.log(`Attempting to remove item with barcode: ${barcode}`);
+                const initialCartLength = cart.length;
                 cart = cart.filter(item => item.barcode !== barcode);
-                saveCart();
-                updateCartUI();
-                showToast("Товар удален из корзины");
+                if (cart.length < initialCartLength) {
+                    console.log(`Successfully removed item with barcode: ${barcode}`);
+                    saveCart();
+                    updateCartUI();
+                    showToast("Товар удален из корзины");
+                } else {
+                    console.log(`Item with barcode: ${barcode} not found, or not removed.`);
+                }
             }
             
             /**
@@ -846,7 +855,6 @@
                                 <span class="cart-item-quantity">${item.quantity}</span>
                                 <button class="cart-quantity-btn increase-cart-quantity-btn" data-barcode="${item.barcode}">+</button>
                             </div>
-                            <span class="cart-item-total">${(item.price * item.quantity).toFixed(2)} ₽</span>
                             <button class="remove-item-btn" data-barcode="${item.barcode}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
